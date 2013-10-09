@@ -20,6 +20,9 @@
  * helloworld.c: simple test application
  */
 
+#include "xgpio.h" 
+#include "mb_interface.h"
+#include "xintc_l.h"
 
 #include "xparameters.h"
 #include "xbasic_types.h"
@@ -28,9 +31,6 @@
 #include "xuartlite.h"
 #include "stdio.h"
 #include "math.h"
-
-
-
 
 #include <stdio.h>
 #include "platform.h"
@@ -54,6 +54,42 @@ void print(char *str);
 #define FRAME_BUFFER_0_ADDR 0xC1000000  // Starting location in DDR where we will store the images that we display.
 #define MAX_SILLY_TIMER 10000000;
 
+XGpio gpLED;  // This is a handle for the LED GPIO block.
+XGpio gpPB;   // This is a handle for the push-button GPIO block.
+
+void timer_interrupt_handler() {
+
+}
+
+
+void pb_interrupt_handler() {
+  //Clear the GPIO interrupt.
+  XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
+  currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
+  // You need to do something here.
+  XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
+  XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
+}
+
+
+// Main interrupt handler, queries the interrupt controller to see what peripheral
+// fired the interrupt and then dispatches the corresponding interrupt handler.
+// This routine acks the interrupt at the controller level but the peripheral
+// interrupt must be ack'd by the dispatched interrupt handler.
+void interrupt_handler_dispatcher(void* ptr) {
+  int intc_status = XIntc_GetIntrStatus(XPAR_INTC_0_BASEADDR);
+  // Check the FIT interrupt first.
+  if (intc_status & XPAR_FIT_TIMER_0_INTERRUPT_MASK){
+    XIntc_AckIntr(XPAR_INTC_0_BASEADDR, XPAR_FIT_TIMER_0_INTERRUPT_MASK);
+    timer_interrupt_handler();
+  }
+  // Check the push buttons.
+  if (intc_status & XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK){
+    XIntc_AckIntr(XPAR_INTC_0_BASEADDR, XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK);
+    pb_interrupt_handler();
+  }
+}
+
 int main()
 {
 	initGameDefaults();
@@ -73,7 +109,27 @@ int main()
 	int tmpTankBulletPositionY = getTankBulletPositionY();
 
 	init_platform();                   // Necessary for all programs.
-	int Status;                        // Keep track of success/failure of system function calls.
+	
+  //Initialize interrupts
+  int success;
+  success = XGpio_Initialize(&gpPB, XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID);
+  // Set the push button peripheral to be inputs.
+  XGpio_SetDataDirection(&gpPB, 1, 0x0000001F);
+  // Enable the global GPIO interrupt for push buttons.
+  XGpio_InterruptGlobalEnable(&gpPB);
+  // Enable all interrupts in the push button peripheral.
+  XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
+  
+  microblaze_register_handler(interrupt_handler_dispatcher, NULL);
+  XIntc_EnableIntr(XPAR_INTC_0_BASEADDR, (XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
+  XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
+  microblaze_enable_interrupts();
+  
+  
+  
+  
+  
+  int Status;                        // Keep track of success/failure of system function calls.
 	XAxiVdma videoDMAController;
 	// There are 3 steps to initializing the vdma driver and IP.
 	// Step 1: lookup the memory structure that is used to access the vdma driver.
