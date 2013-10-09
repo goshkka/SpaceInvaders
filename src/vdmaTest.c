@@ -45,6 +45,8 @@
 #include "gameFunctions.h"
 #include "bunkers.h"
 #include "bullets.h"
+#include "banner.h"
+
 //888888
 
 
@@ -56,10 +58,48 @@ void print(char *str);
 
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
+int alienTimer = 0;
+int tankBuleltTimer = 0;
+int alienBulletTimer = 0;
+int alienSpaceShipTimer = 0;
+int alienSpaceShipGeneratorTimer = 0;
+
+int alienSpaceShipGeneratorResult = 500;
+
 
 void timer_interrupt_handler() {
+  alienTimer++;
+  tankBulletTimer++;
+  alienBulletTimer++;
+  alienSpaceShipTimer++;
+  alienSpaceShipGeneratorTimer++;
+  
 
-}
+  if (alienTimer == 100) {
+    alienTimer = 0;
+    setAlienPositionGlobal(9);
+  }
+
+  if (tankBulletTimer == 5) {
+    if (!isHaveTankBullet()) {
+    	setHaveTankBullet(1);
+    	setTankBulletPositionX(getTankPositionGlobal() + 15);
+    	setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT);
+    }
+  }
+
+  if (alienBulletTimer == 10) {
+    alienBulletTimer = 0;
+  }
+  if (alienSpaceShipTimer == 80) {
+    alienSpaceShipTimer = 0;
+    //set alien spaceship position by moving left or right?
+  }
+  if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
+    // Randomly generate a new result that will be long enough for the spaceship to go accross the screen
+    // create spaceship that moves left or right and has a certain value of points {50,100, 150, 200, 300}
+  }
+} 
 
 
 void pb_interrupt_handler() {
@@ -245,7 +285,7 @@ int main()
     	 		 break;
     	 	//Keyboard button 8
     	 	case 56:
-    	 	    setAlienPositionGlobal(9);
+    	 	    
 
     	 	    break;
     	 	//Keyboard button 2
@@ -260,11 +300,6 @@ int main()
     	 	break;
     	 	 //Keyboard button 5
     	 	case 53:
-    	 		if (!isHaveTankBullet()) {
-    	 			setHaveTankBullet(1);
-    	 			setTankBulletPositionX(getTankPositionGlobal() + 15);
-    	 			setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT);
-    	 		}
     	 		break;
     	 	//Keyboard button 3
     	 	case 51:

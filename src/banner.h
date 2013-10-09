@@ -11,6 +11,7 @@
 #include "globals.h"
 
 
-int scoreSymbol[ALIEN_HEIGHT];
+int scoreSymbol[LETTER_HEIGHT];
+int livesSymbol[LETTER_HEIGHT];
 
 #endif /* BANNER_H_ */

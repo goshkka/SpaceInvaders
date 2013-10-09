@@ -43,6 +43,8 @@
 
 #define BUNKER_HEIGHT 12
 #define NUMBER_BUNKER_ELEMENTS 39
+#define LETTER_HEIGHT 14
+
 
 // Packs each horizontal line of the figures into a single 2 bit word.
 #define packWord2(b1,b0) 											  \
@@ -66,6 +68,12 @@
  (b7  << 7 ) | (b6  << 6 ) | (b5  << 5 ) | (b4  << 4 ) | (b3  << 3 ) | (b2  << 2 ) | (b1  << 1 ) | (b0  << 0 ) )
 
 
+#define alienBottomPoint 10
+#define alienMiddlePoint 20
+#define alienTopPoint 40
+
+int globalScore;
+
 typedef struct {unsigned short x; unsigned short y;} point_t;
 typedef struct {
 	int isAvailable;
@@ -75,6 +83,7 @@ typedef struct {
 } alienBullet;
 
 alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
+
 
 void reverseAlienDirection();
 short getAlienDirection();
