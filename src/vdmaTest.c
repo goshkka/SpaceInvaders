@@ -46,7 +46,7 @@
 #include "bunkers.h"
 #include "bullets.h"
 #include "banner.h"
-
+#include "spaceShip.h"
 //888888
 
 
@@ -94,6 +94,7 @@ void timer_interrupt_handler() {
   if (alienSpaceShipTimer == 80) {
     alienSpaceShipTimer = 0;
     //set alien spaceship position by moving left or right?
+    setSpaceShiptPositionGlobal(getSpaceShipPositionGlobal() + 10);
   }
   if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
     // Randomly generate a new result that will be long enough for the spaceship to go accross the screen
@@ -136,7 +137,10 @@ int main()
 
 	int tmpTankPosition = getTankPositionGlobal();
 	int tmpAlienPosition = getAlienPositionGlobal();
-	int tmpBunkerState[NUMBER_BUNKER_ELEMENTS];
+	int tmpSpaceShipPosition = getSpaceShipPositionGlobal();
+
+  int tmpBunkerState[NUMBER_BUNKER_ELEMENTS];
+
 	alienBullet tmpAlienBullets[NUMBER_ALIEN_BULLETS];
 
 	int i = 0;
@@ -389,6 +393,10 @@ int main()
     		 tmpTankBulletPositionY = getTankBulletPositionY();
     		 drawTankBullet(framePointer0);
     	 }
+       if (tmpSpaceShipPosition != getSpaceShipPositionGlobal()) {
+         tmpSpaceShipPosition = getSpaceShipPositionGlobal();
+         drawSpaceShip(framePointer0);
+       }
     	 //while (sillyTimer) sillyTimer--;   // Decrement the timer.
     	 //sillyTimer = MAX_SILLY_TIMER;       // Reset the timer.
          //frameIndex = (frameIndex + 1) % 2;  // Alternate between frame 0 and frame 1.

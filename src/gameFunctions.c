@@ -384,6 +384,22 @@ void drawAlienBullets(unsigned int * framePointer) {
 	}
 }
 
+void drawSpaceShip(unsigned int * framePointer) {
+	int row, col, bullet;
+	for (row = 0; row < (SPACESHIP_HEIGHT ); row++) {
+	  for (col = 0; col < (SPACESHIP_WIDTH); col++) {
+		  if ((spaceShipSymbol[row] & (1<<(SPACESHIP_WIDTH-1-col)))) {
+						if (alienBullets[bullet].y > 0) {
+						  framePointer[(row)*50 + col+getSpaceShipPositionGlobal()] = 0xFFFFFFFF;
+						} else {
+						  framePointer[(row)*50 + col+getSpaceShipPositionGlobal()] = 0x00000000;
+						}
+					}
+					framePointer[(row)*50 + col+getSpaceShipPositionGlobal()] = 0x00000000;
+				}
+			}
+}
+
 //void eraseTankBullet(unsigned int * framePointer) {
 //	xil_printf("FUGLY MOMMA");
 //	int row, col;

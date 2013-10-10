@@ -45,6 +45,8 @@
 #define NUMBER_BUNKER_ELEMENTS 39
 #define LETTER_HEIGHT 14
 
+#define SPACESHIP_HEIGHT 16
+#define SPACESHIP_WIDTH 32
 
 // Packs each horizontal line of the figures into a single 2 bit word.
 #define packWord2(b1,b0) 											  \
@@ -84,6 +86,8 @@ typedef struct {
 
 alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
 
+int getSpaceShipPositionGlobal();
+void setSpaceShipPositionGlobal(int x);
 
 void reverseAlienDirection();
 short getAlienDirection();

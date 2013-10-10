@@ -13,6 +13,8 @@
 int tankMovementDistance = 5;
 int alienMovementDistance = 5;
 int totalAlienMovement = 0;
+int spaceShipPosition = 0;
+
 short alienDirection = 1;
 //Set Alien Start Position
 int alienBlockX = ALIEN_BLOCK_X_START;
@@ -26,6 +28,13 @@ point_t tankBulletPosition;
 point_t alienBlockPosition;
 
 // Here are the accessors.
+//
+int getSpaceShipPositionGlobal() {
+  return spaceShipPosition;
+}
+void setSpaceShipPositionGlobal(int x) {
+  spaceShipPosition = x;
+}
 void setTankPositionGlobal(unsigned short val) {
   tankPosition = val;
 }
