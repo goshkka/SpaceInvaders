@@ -252,6 +252,7 @@ int main()
      drawAlienBlock(framePointer0,0);
      drawTank(framePointer0);
      drawBunkerBlock(framePointer0);
+     drawBannerBlock(framePointer0);
 
 
   // Let's print out the alien as ASCII characters on the screen.

@@ -13,5 +13,6 @@
 
 int scoreSymbol[LETTER_HEIGHT];
 int livesSymbol[LETTER_HEIGHT];
+int numbers[10][LETTER_HEIGHT];
 
 #endif /* BANNER_H_ */

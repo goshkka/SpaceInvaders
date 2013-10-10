@@ -19,6 +19,7 @@ void drawBunkerBlock(unsigned int * framePointer);
 void drawTankBullet(unsigned int * framePointer);
 void drawAlienBullets(unsigned int * framePointer);
 void drawSpaceShip(unsigned int * framePointer);
+void drawBannerBlock(unsigned int * framePointer);
 
 int isEven(int n);
 void killAlien(int n);
