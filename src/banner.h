@@ -1,9 +1,10 @@
 /*
- * tank.h
+ * banner.h
  *
- *  Created on: Sep 28, 2013
+ *  Created on: Oct 10, 2013
  *      Author: superman
  */
+
 
 #ifndef BANNER_H_
 #define BANNER_H_

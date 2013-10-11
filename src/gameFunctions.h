@@ -14,6 +14,7 @@
 void removeRedraw(unsigned int * framePointer, int positionChange);
 void drawAlienBlock(unsigned int * framePointer, int positionChange);
 void drawAlien(int x, int y, int alienType, unsigned int * framePointer);
+int* takeRoll(int* arr);
 
 void drawBunkerBlock(unsigned int * framePointer);
 void drawTankBullet(unsigned int * framePointer);

@@ -1,4 +1,4 @@
-/*
+/*/*
  * globals.c
  *
  *  Created on: Sep 28, 2013
@@ -19,6 +19,11 @@ short alienDirection = 1;
 //Set Alien Start Position
 int alienBlockX = ALIEN_BLOCK_X_START;
 int alienBlockY = ALIEN_BLOCK_Y_START;
+
+int global_block_x_end = ALIEN_BLOCK_X_END;
+int global_block_x_start = ALIEN_BLOCK_X_START;
+int global_block_y_end = ALIEN_BLOCK_Y_END;
+
 
 //Set Aliens to alive/dead 1/0
 int alienLifeState[55] = { [0 ... 54] = 1 };
@@ -49,6 +54,7 @@ void reverseAlienDirection(){
 short getAlienDirection(){
 	return alienDirection;
 }
+
 void setAlienPositionGlobal(unsigned short val){
 	//For tracking score and length of game
 	alienMovementDistance = val;
@@ -192,3 +198,4 @@ void setBunkerErosionState(int x) {
 		bunkerErosionState[i] = x;
 	}
 }
+

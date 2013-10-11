@@ -71,12 +71,12 @@
 
 
 // Packs each horizontal line of the figures into a single 32 bit word.
-#define packWord32(b63, b62, b61, b60, b59, b58, b57, b56, b55, b54, b53, b52, b51, b50, b49, b48, b47, b46, b45, b44, b43, b42, b41, b40, b39, b38, b37, b36, b34, b33, b32, b31,b30,b29,b28,b27,b26,b25,b24,b23,b22,b21,b20,b19,b18,b17,b16,b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) \
+#define packWord64(b63, b62, b61, b60, b59, b58, b57, b56, b55, b54, b53, b52, b51, b50, b49, b48, b47, b46, b45, b44, b43, b42, b41, b40, b39, b38, b37, b36, b35, b34, b33, b32, b31,b30,b29,b28,b27,b26,b25,b24,b23,b22,b21,b20,b19,b18,b17,b16,b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) \
 ((b63 << 63) | (b62 << 62) | (b61 << 61) | (b60 << 60) | (b59 << 59) | (b58 << 58) | (b57 << 57) | (b56 << 56) |						  \
-((b55 << 55) | (b54 << 54) | (b53 << 53) | (b52 << 52) | (b51 << 51) | (b50 << 50) | (b49 << 49) | (b48 << 48) |						  \
-((b47 << 47) | (b46 << 46) | (b45 << 45) | (b44 << 44) | (b43 << 43) | (b42 << 42) | (b41 << 41) | (b40 << 40) |						  \
-((b39 << 39) | (b38 << 38) | (b37 << 37) | (b36 << 36) | (b35 << 35) | (b34 << 34) | (b33 << 33) | (b32 << 32) |						  \
-((b31 << 31) | (b30 << 30) | (b29 << 29) | (b28 << 28) | (b27 << 27) | (b26 << 26) | (b25 << 25) | (b24 << 24) |						  \
+ (b55 << 55) | (b54 << 54) | (b53 << 53) | (b52 << 52) | (b51 << 51) | (b50 << 50) | (b49 << 49) | (b48 << 48) |						  \
+ (b47 << 47) | (b46 << 46) | (b45 << 45) | (b44 << 44) | (b43 << 43) | (b42 << 42) | (b41 << 41) | (b40 << 40) |						  \
+ (b39 << 39) | (b38 << 38) | (b37 << 37) | (b36 << 36) | (b35 << 35) | (b34 << 34) | (b33 << 33) | (b32 << 32) |						  \
+ (b31 << 31) | (b30 << 30) | (b29 << 29) | (b28 << 28) | (b27 << 27) | (b26 << 26) | (b25 << 25) | (b24 << 24) |						  \
  (b23 << 23) | (b22 << 22) | (b21 << 21) | (b20 << 20) | (b19 << 19) | (b18 << 18) | (b17 << 17) | (b16 << 16) |						  \
  (b15 << 15) | (b14 << 14) | (b13 << 13) | (b12 << 12) | (b11 << 11) | (b10 << 10) | (b9  << 9 ) | (b8  << 8 ) |						  \
  (b7  << 7 ) | (b6  << 6 ) | (b5  << 5 ) | (b4  << 4 ) | (b3  << 3 ) | (b2  << 2 ) | (b1  << 1 ) | (b0  << 0 ) )
@@ -98,6 +98,7 @@ typedef struct {
 
 alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
 
+
 int getSpaceShipPositionGlobal();
 void setSpaceShipPositionGlobal(int x);
 
@@ -108,6 +109,8 @@ void setAlienPositionGlobal(unsigned short val);
 unsigned int getAlienPositionGlobal();
 point_t getAlienXYGlobal();
 int getAlienMovementGlobal();
+
+
 
 void setTankPositionGlobal(unsigned short val);
 unsigned short getTankPositionGlobal();

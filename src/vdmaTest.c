@@ -20,7 +20,7 @@
  * helloworld.c: simple test application
  */
 
-#include "xgpio.h" 
+#include "xgpio.h"
 #include "mb_interface.h"
 #include "xintc_l.h"
 
@@ -59,11 +59,11 @@ void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
 int alienTimer = 0;
-int tankBuleltTimer = 0;
+int tankBulletTimer = 0;
 int alienBulletTimer = 0;
 int alienSpaceShipTimer = 0;
 int alienSpaceShipGeneratorTimer = 0;
-
+int currentButtonState = 0;
 int alienSpaceShipGeneratorResult = 500;
 
 
@@ -73,9 +73,9 @@ void timer_interrupt_handler() {
   alienBulletTimer++;
   alienSpaceShipTimer++;
   alienSpaceShipGeneratorTimer++;
-  
 
-  if (alienTimer == 100) {
+
+  if (alienTimer == 40) {
     alienTimer = 0;
     setAlienPositionGlobal(9);
   }
@@ -94,16 +94,17 @@ void timer_interrupt_handler() {
   if (alienSpaceShipTimer == 80) {
     alienSpaceShipTimer = 0;
     //set alien spaceship position by moving left or right?
-    setSpaceShiptPositionGlobal(getSpaceShipPositionGlobal() + 10);
+    setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + 10);
   }
   if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
     // Randomly generate a new result that will be long enough for the spaceship to go accross the screen
     // create spaceship that moves left or right and has a certain value of points {50,100, 150, 200, 300}
   }
-} 
+}
 
 
 void pb_interrupt_handler() {
+
   //Clear the GPIO interrupt.
   XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
   currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
@@ -153,7 +154,7 @@ int main()
 	int tmpTankBulletPositionY = getTankBulletPositionY();
 
 	init_platform();                   // Necessary for all programs.
-	
+
   //Initialize interrupts
   int success;
   success = XGpio_Initialize(&gpPB, XPAR_PUSH_BUTTONS_5BITS_DEVICE_ID);
@@ -163,16 +164,16 @@ int main()
   XGpio_InterruptGlobalEnable(&gpPB);
   // Enable all interrupts in the push button peripheral.
   XGpio_InterruptEnable(&gpPB, 0xFFFFFFFF);
-  
+
   microblaze_register_handler(interrupt_handler_dispatcher, NULL);
   XIntc_EnableIntr(XPAR_INTC_0_BASEADDR, (XPAR_FIT_TIMER_0_INTERRUPT_MASK | XPAR_PUSH_BUTTONS_5BITS_IP2INTC_IRPT_MASK));
   XIntc_MasterEnable(XPAR_INTC_0_BASEADDR);
   microblaze_enable_interrupts();
-  
-  
-  
-  
-  
+
+
+
+
+
   int Status;                        // Keep track of success/failure of system function calls.
 	XAxiVdma videoDMAController;
 	// There are 3 steps to initializing the vdma driver and IP.
@@ -252,7 +253,7 @@ int main()
      drawAlienBlock(framePointer0,0);
      drawTank(framePointer0);
      drawBunkerBlock(framePointer0);
-     drawBannerBlock(framePointer0);
+     //drawBannerBlock(framePointer0);
 
 
   // Let's print out the alien as ASCII characters on the screen.
@@ -276,99 +277,104 @@ int main()
      }
      // Oscillate between frame 0 and frame 1.
      //int sillyTimer = MAX_SILLY_TIMER;  // Just a cheap delay between frames.
+     int j;
+     for(j=0;j<5;j++){
+     killAlien(j*11);
+     killAlien(j*11+10);
+     }
      while (1) {
-    	 char c = getchar();
-    	 int eState;
-    	 switch(c) {
-    	 	 //Keyboard button 6
-    	 	 case 54:
-    	 		 setTankPositionGlobal(getTankPositionGlobal() + 5);
-    	 		 break;
-    	 	 //Keyboard button 4
-    	 	 case 52:
-    	 		 setTankPositionGlobal(getTankPositionGlobal() - 5);
-    	 		 break;
-    	 	//Keyboard button 8
-    	 	case 56:
-    	 	    
-
-    	 	    break;
-    	 	//Keyboard button 2
-    	 	case 50:
-    	 		xil_printf("\r\nPlease pick a value between 00 and 54 to kill alien\r\n");
-    	 		char key0 = getchar() - 48 ;
-    	 		char key1 = getchar() - 48;
-
-    	 		int value = key0*10 + key1;
-    	 		xil_printf("\rAlien is Dead: %d\r\n", value);
-    	 		killAlien(value);
-    	 	break;
-    	 	 //Keyboard button 5
-    	 	case 53:
-    	 		break;
-    	 	//Keyboard button 3
-    	 	case 51:
-    	 		//Add Alien bullet
-    	 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
-    	 			if (alienBullets[i].isAvailable == DEAD ) {
-    	 				alienBullets[i].isAvailable = ALIVE;
-    	 				// Position
-
-    	 				int Offset = 8;
-    	 				//You do the random junk WORD_WIDTH*i is where it determines the alien
-    	 				alienBullets[i].x = (HALF_WORD_WIDTH- Offset)  + WORD_WIDTH*(generateRandomNumber(10)+ 1) + getAlienXYGlobal().x;
-    	 				alienBullets[i].y = ALIEN_BLOCK_Y_END + getAlienXYGlobal().y;
-    	 				//point_t tmp = generateRandomAlienBulletPosition();
-    	 				//alienBullets[i].x = tmp.x;
-    	 				//alienBullets[i].y = tmp.y;
-    	 				alienBullets[i].bulletSymbol = generateRandomNumber(NUMBER_ALIEN_BULLETS);
-    	 				break;
-    	 			}
-    	 		}
-
-    	 		break;
-    	 	//Keyboard button 9
-    	 	case 57:
-    	 		if (isHaveTankBullet()){
-    	 			setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
-    	 			if (getTankBulletPositionY() <= -1) {
-    	 				setHaveTankBullet(0);
-    	 				//eraseTankBullet(framePointer0);
-    	 			}
-    	 		}
-    	 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
-    	 			if (alienBullets[i].isAvailable == ALIVE) {
-    	 				alienBullets[i].y += ALIEN_BULLET_TRAVEL_DISTANCE;
-    	 				if (alienBullets[i].y >= 480) {
-    	 					alienBullets[i].isAvailable = DEAD;
-    	 				}
-    	 			}
-    	 		}
-    	 		break;
-    	 	//Keyboard button 7
-    	 	case 55:
-    	 		// we can add a way of making all states -1 if we want to restore bunkers
-
-    	 		xil_printf("\r\nPlease pick a value between 0 and 4 for erosion state of all bunkers\r\n");
-    	 		char cs = getchar();
-    	 		if (cs == 48)
-    	 			eState = 0;
-    	 		else if (cs == 49)
-    	 			eState = 1;
-    	 		else if (cs == 50)
-    	 			eState = 2;
-    	 		else if (cs == 51)
-    	 			eState = 3;
-    	 		else if (cs == 52)
-    	 			eState = 4;
-    	 		xil_printf("\rYou picked : %d\r\n", eState);
-    	 		setBunkerErosionState(eState);
-    	 		break;
-
-
-
-
-    	 }
+////    	 char c = getchar();
+////    	 int eState;
+////    	 switch(c) {
+////    	 	 //Keyboard button 6
+////    	 	 case 54:
+////    	 		 setTankPositionGlobal(getTankPositionGlobal() + 5);
+////    	 		 break;
+////    	 	 //Keyboard button 4
+////    	 	 case 52:
+////    	 		 setTankPositionGlobal(getTankPositionGlobal() - 5);
+////    	 		 break;
+////    	 	//Keyboard button 8
+////    	 	case 56:
+////
+////
+////    	 	    break;
+////    	 	//Keyboard button 2
+////    	 	case 50:
+////    	 		xil_printf("\r\nPlease pick a value between 00 and 54 to kill alien\r\n");
+////    	 		char key0 = getchar() - 48 ;
+////    	 		char key1 = getchar() - 48;
+////
+////    	 		int value = key0*10 + key1;
+////    	 		xil_printf("\rAlien is Dead: %d\r\n", value);
+////    	 		killAlien(value);
+////    	 	break;
+////    	 	 //Keyboard button 5
+////    	 	case 53:
+////    	 		break;
+////    	 	//Keyboard button 3
+////    	 	case 51:
+////    	 		//Add Alien bullet
+////    	 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
+////    	 			if (alienBullets[i].isAvailable == DEAD ) {
+////    	 				alienBullets[i].isAvailable = ALIVE;
+////    	 				// Position
+////
+////    	 				int Offset = 8;
+////    	 				//You do the random junk WORD_WIDTH*i is where it determines the alien
+////    	 				alienBullets[i].x = (HALF_WORD_WIDTH- Offset)  + WORD_WIDTH*(generateRandomNumber(10)+ 1) + getAlienXYGlobal().x;
+////    	 				alienBullets[i].y = ALIEN_BLOCK_Y_END + getAlienXYGlobal().y;
+////    	 				//point_t tmp = generateRandomAlienBulletPosition();
+////    	 				//alienBullets[i].x = tmp.x;
+////    	 				//alienBullets[i].y = tmp.y;
+////    	 				alienBullets[i].bulletSymbol = generateRandomNumber(NUMBER_ALIEN_BULLETS);
+////    	 				break;
+////    	 			}
+////    	 		}
+////
+////    	 		break;
+////    	 	//Keyboard button 9
+////    	 	case 57:
+////    	 		if (isHaveTankBullet()){
+////    	 			setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
+////    	 			if (getTankBulletPositionY() <= -1) {
+////    	 				setHaveTankBullet(0);
+////    	 				//eraseTankBullet(framePointer0);
+////    	 			}
+////    	 		}
+////    	 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
+////    	 			if (alienBullets[i].isAvailable == ALIVE) {
+////    	 				alienBullets[i].y += ALIEN_BULLET_TRAVEL_DISTANCE;
+////    	 				if (alienBullets[i].y >= 480) {
+////    	 					alienBullets[i].isAvailable = DEAD;
+////    	 				}
+////    	 			}
+////    	 		}
+////    	 		break;
+////    	 	//Keyboard button 7
+////    	 	case 55:
+////    	 		// we can add a way of making all states -1 if we want to restore bunkers
+////
+////    	 		xil_printf("\r\nPlease pick a value between 0 and 4 for erosion state of all bunkers\r\n");
+////    	 		char cs = getchar();
+////    	 		if (cs == 48)
+////    	 			eState = 0;
+////    	 		else if (cs == 49)
+////    	 			eState = 1;
+////    	 		else if (cs == 50)
+////    	 			eState = 2;
+////    	 		else if (cs == 51)
+////    	 			eState = 3;
+////    	 		else if (cs == 52)
+////    	 			eState = 4;
+////    	 		xil_printf("\rYou picked : %d\r\n", eState);
+////    	 		setBunkerErosionState(eState);
+////    	 		break;
+////
+////
+//
+//
+////    	 }
     	 if (tmpAlienPosition != getAlienPositionGlobal()){
     	     		 tmpAlienPosition = getAlienPositionGlobal();
     	     		 drawAlienBlock(framePointer0,getAlienMovementGlobal());

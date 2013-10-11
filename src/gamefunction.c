@@ -10,8 +10,10 @@
 #include "tank.h"
 #include "bunkers.h"
 #include "bullets.h"
+#include "spaceship.h"
 #include <stdio.h>
-
+	int COLUMNS=ALIEN_BLOCK_COLUMNS;
+	int ROWS=ALIEN_BLOCK_ROWS;
 
 
 int isEven(int n){
@@ -133,32 +135,79 @@ void removeRedraw(unsigned int * framePointer, int positionChange){
 
 
 }
+
+int* takeRoll(int* arr){
+	int c,k,j;
+	//This for loop initializes alien_roll
+	for(k=0;k<COLUMNS;k++){
+			c=0;
+			for(j=0;j<ROWS;j++){
+		     if(getAlienLifeState(j*COLUMNS+k)==DEAD){
+		    	c++;
+		     }
+
+			}
+			if(c==ROWS){
+				//ALIEN ROW IS DEAD
+				arr[k]=DEAD;
+			}else{
+				//ALIEN ROW IS Alive
+				arr[k]=ALIVE;
+			}
+
+			 //dead column
+		}
+	return arr;
+}
 // Loop through each alien and redraw
 // Added a blank row between each alien row
 void drawAlienBlock(unsigned int * framePointer, int positionChange)
 {
 
-	int COLUMNS=ALIEN_BLOCK_COLUMNS;
 
 	//removes the previous parts of the frame
 	removeRedraw(framePointer, positionChange);
-//remove dead alien columns
-	/*
-	int c;
-	int offset=11;
-	for(c=0;c<56;c*COLUMNS+offset){
-		if(getAlienLifeState(c) == DEAD for all columns
-		 DEAD_ALIEN_OFFSET += WORD_WIDTH;
+
+	//find out which columns are dead
+	int filler[COLUMNS];
+	int *alien_roll = takeRoll(filler);
+
+
+//		if(getAlienLifeState(c) == DEAD for all columns
+//		 DEAD_ALIEN_OFFSET += WORD_WIDTH;
 		 //add DEAD_ALIEN_OFFSET to draw section.....
-	}
-	*/
+//	}
 
+
+
+	//REMOVES DEAD ALIEN COLUMNS FROM BLOCK
 	int i = 0;
-	for (i = 0; i < COLUMNS; i++) {
-		//TODO:
+	int start = 0;
+	int end = COLUMNS;
+
+	while(i< COLUMNS){
+		if(alien_roll[i]==DEAD)
+			start = i+1;
+		else
+			break;
+		i++;
+	}
+
+	i=COLUMNS-1;
+	while(i >-1){
+		if(alien_roll[i]==DEAD)
+			end = i;
+		else
+			break;
+		i--;
+	}
+
+	//DRAWS ALIEN BLOCK
+	for (i = start; i < end; i++) {
 
 
 
+		//DRAWS AN ENTIRE COLUMN OF ALIENS
 
 		//ADD ADDITIONAL ROW SEPERATOR BLOCKS TO ERASE BLOCK WHEN MOVING LEFT TO RIGHT
 		drawRowSeparator(alienBlockX-WORD_WIDTH*i, alienBlockY+ALIEN_HEIGHT, framePointer);
