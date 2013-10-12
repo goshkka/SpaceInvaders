@@ -491,9 +491,35 @@ void drawBannerBlock(unsigned int * framePointer) {
 
 }
 
+// Draws one number on the screen
+void drawNumber(unsigned int * framePointer, int number, int xPos) {
+	int row, col;
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < 64; col++) {
+			if (col < 0 || col >= 8) {
+				framePointer[(row+)*640 + col] = 0x00000000;
+			} else {
+				if ((numbers[number][row] & (1<<(WORD_WIDTH-1-col)))) {
+					framePointer[(row)*640 + col] = 0x0000FF00;
+				} else {
+					framePointer[(row)*640 + col] = 0x00000000;
+				}
+			}
+		}
+	}
+  
+}
 
 void drawScore(unsigned int * framePointer, int value) {
-  
+  int score = value;
+  int count = 0;
+  while(score) {
+    //draw right most first, then shift to the left 10*count
+    drawNumber(framePointer, score % 10, RIGHT_NUMBER - count*10);
+    //printf("%d\n", score % 10);
+    score /= 10;
+    count++;
+  }
 }
 
 

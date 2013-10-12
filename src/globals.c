@@ -16,6 +16,8 @@ int totalAlienMovement = 0;
 int spaceShipPosition = 0;
 
 short alienDirection = 1;
+
+int globalScore = 0;
 //Set Alien Start Position
 int alienBlockX = ALIEN_BLOCK_X_START;
 int alienBlockY = ALIEN_BLOCK_Y_START;
@@ -34,6 +36,14 @@ point_t alienBlockPosition;
 
 // Here are the accessors.
 //
+
+int getGlobalScore() {
+  return globalScore;
+}
+void setGlobalScore(int x) {
+  globalScore = x;
+}
+
 int getSpaceShipPositionGlobal() {
   return spaceShipPosition;
 }

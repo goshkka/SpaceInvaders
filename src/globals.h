@@ -56,6 +56,7 @@
 #define BUNKER_HEIGHT 12
 #define NUMBER_BUNKER_ELEMENTS 39
 #define LETTER_HEIGHT 10
+#define RIGHT_NUMBER 120
 
 #define SPACESHIP_HEIGHT 16
 #define SPACESHIP_WIDTH 32
@@ -98,8 +99,6 @@
 #define alienMiddlePoint 20
 #define alienTopPoint 40
 
-int globalScore;
-
 typedef struct {unsigned short x; unsigned short y;} point_t;
 typedef struct {
 	int isAvailable;
@@ -113,6 +112,9 @@ alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
 
 int getSpaceShipPositionGlobal();
 void setSpaceShipPositionGlobal(int x);
+
+int getGlobalScore();
+void setGlobalScore(int x);
 
 void reverseAlienDirection();
 short getAlienDirection();
