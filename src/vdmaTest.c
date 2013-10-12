@@ -81,6 +81,13 @@ void timer_interrupt_handler() {
   }
 
   if (tankBulletTimer == 5) {
+    if (isHaveTankBullet()){
+      setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
+      if (getTankBulletPositionY() <= -1) {
+        setHaveTankBullet(0);
+        //eraseTankBullet(framePointer0);
+      }
+    }
   }
 
   if (alienBulletTimer == 10) {
@@ -346,13 +353,6 @@ int main()
 ////    	 		break;
 ////    	 	//Keyboard button 9
 ////    	 	case 57:
-////    	 		if (isHaveTankBullet()){
-////    	 			setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
-////    	 			if (getTankBulletPositionY() <= -1) {
-////    	 				setHaveTankBullet(0);
-////    	 				//eraseTankBullet(framePointer0);
-////    	 			}
-////    	 		}
 ////    	 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
 ////    	 			if (alienBullets[i].isAvailable == ALIVE) {
 ////    	 				alienBullets[i].y += ALIEN_BULLET_TRAVEL_DISTANCE;
