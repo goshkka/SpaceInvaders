@@ -168,7 +168,7 @@ int main()
 	int tmpTankPosition = getTankPositionGlobal();
 	int tmpAlienPosition = getAlienPositionGlobal();
 	int tmpSpaceShipPosition = getSpaceShipPositionGlobal();
-
+  int tmpScore = getGlobalScore();
   int tmpBunkerState[NUMBER_BUNKER_ELEMENTS];
 
 	alienBullet tmpAlienBullets[NUMBER_ALIEN_BULLETS];
@@ -282,7 +282,7 @@ int main()
      drawAlienBlock(framePointer0,0);
      drawTank(framePointer0);
      drawBunkerBlock(framePointer0);
-     //drawBannerBlock(framePointer0);
+     drawBannerBlock(framePointer0);
 
 
   // Let's print out the alien as ASCII characters on the screen.
