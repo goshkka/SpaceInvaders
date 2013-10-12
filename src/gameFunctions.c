@@ -453,6 +453,20 @@ void drawSpaceShip(unsigned int * framePointer) {
 
 
 void drawScoreBanner(unsigned int * framePointer) {
+	int row, col;
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < 64; col++) {
+			if (col < 0 || col >= WORD_WIDTH) {
+				framePointer[(row+)*640 + col] = 0x00000000;
+			} else {
+				if ((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
+					framePointer[(row)*640 + col] = 0x0000FF00;
+				} else {
+					framePointer[(row)*640 + col] = 0x00000000;
+				}
+			}
+		}
+	}
 
 }
 
@@ -478,6 +492,9 @@ void drawBannerBlock(unsigned int * framePointer) {
 }
 
 
+void drawScore(unsigned int * framePointer, int value) {
+  
+}
 
 
 

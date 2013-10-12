@@ -64,7 +64,7 @@
 #define packWord2(b1,b0) 											  \
 ((b1  << 1 ) | (b0  << 0 ))
 
-// Packs each horizontal line of the figures into a single 16 bit word.
+// Packs each horizontal line of the figures into a single 6 bit word.
 #define packWord6(b5,b4,b3,b2,b1,b0) 											  \
 ((b5  << 5 ) | (b4  << 4 ) | (b3  << 3 ) | (b2  << 2 ) | (b1  << 1 ) | (b0  << 0 ) )
 

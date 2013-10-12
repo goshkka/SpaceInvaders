@@ -26,6 +26,8 @@ void drawScore(unsigned int * framePointer);
 void drawLivesBanner(unsigned int * framePointer);
 void drawLives(unsigned int * framePointer);
 
+void drawScore(unsigned int * framePointer, int value);
+
 int isEven(int n);
 void killAlien(int n);
 
