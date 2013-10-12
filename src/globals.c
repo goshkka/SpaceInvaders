@@ -33,9 +33,15 @@ int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS -1] =
 unsigned short tankPosition = 30;
 point_t tankBulletPosition;
 point_t alienBlockPosition;
-
+int numberLives = 3;
 // Here are the accessors.
 //
+int getNumberLives() {
+  return numberLives;
+}
+void setNumberLives(int x) {
+  numberLives = x;
+}
 
 int getGlobalScore() {
   return globalScore;

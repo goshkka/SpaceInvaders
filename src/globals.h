@@ -113,6 +113,9 @@ alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
 int getSpaceShipPositionGlobal();
 void setSpaceShipPositionGlobal(int x);
 
+int getNumberLives();
+void setNumberLives(int x);
+
 int getGlobalScore();
 void setGlobalScore(int x);
 
