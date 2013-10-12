@@ -61,6 +61,7 @@ XGpio gpPB;   // This is a handle for the push-button GPIO block.
 int alienTimer = 0;
 int tankBulletTimer = 0;
 int alienBulletTimer = 0;
+int alienBulletGeneratorTimer = 0;
 int alienSpaceShipTimer = 0;
 int alienSpaceShipGeneratorTimer = 0;
 int currentButtonState = 0;
@@ -74,12 +75,12 @@ void timer_interrupt_handler() {
   alienSpaceShipTimer++;
   alienSpaceShipGeneratorTimer++;
 
-
+  //how fast the aliens move across the screen
   if (alienTimer == 40) {
     alienTimer = 0;
     setAlienPositionGlobal(9);
   }
-
+  //how fast tanke bullet travels across screen
   if (tankBulletTimer == 5) {
     if (isHaveTankBullet()){
       setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
@@ -89,15 +90,25 @@ void timer_interrupt_handler() {
       }
     }
   }
-
+  //how fast alien bullet travels across screen
   if (alienBulletTimer == 10) {
     alienBulletTimer = 0;
+    for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
+      if (alienBullets[i].isAvailable == ALIVE) {
+        alienBullets[i].y += ALIEN_BULLET_TRAVEL_DISTANCE;
+        if (alienBullets[i].y >= 480) {
+          alienBullets[i].isAvailable = DEAD;
+        }
+      }
+    }
   }
+  //how fast space ship travels across screen
   if (alienSpaceShipTimer == 80) {
     alienSpaceShipTimer = 0;
     //set alien spaceship position by moving left or right?
     setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + 10);
   }
+  //when to generate an alien spaceship to fly accross the screen
   if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
     // Randomly generate a new result that will be long enough for the spaceship to go accross the screen
     // create spaceship that moves left or right and has a certain value of points {50,100, 150, 200, 300}
@@ -301,22 +312,6 @@ int main()
      killAlien(j*11+10);
      }
      while (1) {
-////    	 char c = getchar();
-////    	 int eState;
-////    	 switch(c) {
-////    	 	 //Keyboard button 6
-////    	 	 case 54:
-////    	 		 setTankPositionGlobal(getTankPositionGlobal() + 5);
-////    	 		 break;
-////    	 	 //Keyboard button 4
-////    	 	 case 52:
-////    	 		 setTankPositionGlobal(getTankPositionGlobal() - 5);
-////    	 		 break;
-////    	 	//Keyboard button 8
-////    	 	case 56:
-////
-////
-////    	 	    break;
 ////    	 	//Keyboard button 2
 ////    	 	case 50:
 ////    	 		xil_printf("\r\nPlease pick a value between 00 and 54 to kill alien\r\n");
@@ -327,9 +322,6 @@ int main()
 ////    	 		xil_printf("\rAlien is Dead: %d\r\n", value);
 ////    	 		killAlien(value);
 ////    	 	break;
-////    	 	 //Keyboard button 5
-////    	 	case 53:
-////    	 		break;
 ////    	 	//Keyboard button 3
 ////    	 	case 51:
 ////    	 		//Add Alien bullet
@@ -353,14 +345,6 @@ int main()
 ////    	 		break;
 ////    	 	//Keyboard button 9
 ////    	 	case 57:
-////    	 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
-////    	 			if (alienBullets[i].isAvailable == ALIVE) {
-////    	 				alienBullets[i].y += ALIEN_BULLET_TRAVEL_DISTANCE;
-////    	 				if (alienBullets[i].y >= 480) {
-////    	 					alienBullets[i].isAvailable = DEAD;
-////    	 				}
-////    	 			}
-////    	 		}
 ////    	 		break;
 ////    	 	//Keyboard button 7
 ////    	 	case 55:
