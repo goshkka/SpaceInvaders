@@ -26,6 +26,18 @@
 #define ALIVE 1
 #define DEAD  0
 
+//BUTTON MAPPING
+//       16
+//  8   1   2
+//       4
+#define LEFT_BUTTON   8 //0x00001000
+#define MIDDLE_BUTTON 1 //0x00000001
+#define RIGHT_BUTTON 2 //0x00000010
+#define TOP_BUTTON     16 //0x00010000
+#define BOTTOM_BUTTON   4 //0x00000100
+#define TRUE 1
+#define FALSE 0
+
 
 
 #define TANK_HEIGHT 16

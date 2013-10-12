@@ -81,11 +81,6 @@ void timer_interrupt_handler() {
   }
 
   if (tankBulletTimer == 5) {
-    if (!isHaveTankBullet()) {
-    	setHaveTankBullet(1);
-    	setTankBulletPositionX(getTankPositionGlobal() + 15);
-    	setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT);
-    }
   }
 
   if (alienBulletTimer == 10) {
@@ -108,6 +103,22 @@ void pb_interrupt_handler() {
   //Clear the GPIO interrupt.
   XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
   currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
+  switch (currentButtonState) {
+    case LEFT_BUTTON:
+      setTankPositionGlobal(getTankPositionGlobal() - 5);     
+      break;
+    case MIDDLE_BUTTON:
+      if (!isHaveTankBullet()) {
+        setHaveTankBullet(1);
+        setTankBulletPositionX(getTankPositionGlobal() + 15);
+        setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT+2);
+      }
+      break;
+    case RIGHT_BUTTON:
+      setTankPositionGlobal(getTankPositionGlobal() + 5);
+      break;
+  }
+  
   // You need to do something here.
   XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
   XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
