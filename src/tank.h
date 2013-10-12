@@ -12,5 +12,6 @@
 
 
 int tankSymbol[ALIEN_HEIGHT];
+int tankKilledSymbols[2][ALIEN_HEIGHT];
 
 #endif /* TANK_H_ */
