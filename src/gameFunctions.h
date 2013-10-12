@@ -31,4 +31,6 @@ void drawScore(unsigned int * framePointer, int value);
 int isEven(int n);
 void killAlien(int n);
 
+void drawSprite(unsigned int * framePointer, int x, int y, int width, int height, unsigned int color);
+
 #endif /* GAMEFUNCTIONS_H_ */

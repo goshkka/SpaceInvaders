@@ -16,6 +16,9 @@
 	int COLUMNS=ALIEN_BLOCK_COLUMNS;
 	int ROWS=ALIEN_BLOCK_ROWS;
 
+void drawSprite(unsigned int * framePointer, int x, int y, int width, int height, unsigned int color) {
+
+}
 
 int isEven(int n){
 	   if ( n%2 == 0 )
