@@ -8,6 +8,7 @@
 #include "bullets.h"
 #include "globals.h"
 
+
 int tankBulletSymbol[TANK_BULLET_HEIGHT] =
 {
 		packWord2(1,1),
