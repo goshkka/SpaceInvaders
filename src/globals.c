@@ -26,17 +26,22 @@ int global_block_x_end = ALIEN_BLOCK_X_END;
 int global_block_x_start = ALIEN_BLOCK_X_START;
 int global_block_y_end = ALIEN_BLOCK_Y_END;
 
+//Alien Offset Variables
+int alienRightOffset= 0;
+int alienLeftOffset = 0;
 
 //Set Aliens to alive/dead 1/0
 int alienLifeState[55] = { [0 ... 54] = 1 };
-int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS -1] = 1};
-unsigned short tankPosition = 30;
+int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] = 1};
+
+short tankPosition = 30;
 point_t tankBulletPosition;
 point_t alienBlockPosition;
 int numberLives = 3;
 // Here are the accessors.
 //
 int getNumberLives() {
+	//xil_printf("%d",numberLives);
   return numberLives;
 }
 void setNumberLives(int x) {
@@ -56,14 +61,19 @@ int getSpaceShipPositionGlobal() {
 void setSpaceShipPositionGlobal(int x) {
   spaceShipPosition = x;
 }
-void setTankPositionGlobal(unsigned short val) {
+
+void setTankPositionGlobal(short val) {
   tankPosition = val;
+  if (tankPosition < 0) {
+	  tankPosition = 0;
+  } else if (tankPosition > SCREEN_WIDTH-WORD_WIDTH) {
+	  tankPosition = SCREEN_WIDTH-WORD_WIDTH;
+  }
 }
-
-
-unsigned short getTankPositionGlobal() {
+short getTankPositionGlobal() {
   return tankPosition;
 }
+
 void reverseAlienDirection(){
 	alienDirection = (-1)*alienDirection;
 }
@@ -71,38 +81,60 @@ short getAlienDirection(){
 	return alienDirection;
 }
 
+void setAlienOffset(int offset){
+	//Positive numbers Right offset
+	if(offset > 0){
+		alienRightOffset=offset;
+	}//Negative numbers Left offset
+	if(offset < 0){
+		alienLeftOffset= offset;
+	}//Zero resets both
+	if(offset == 0){
+		alienRightOffset=offset;
+		alienLeftOffset=offset;
+	}
+
+}
+int getRightOffset(){
+	return alienRightOffset;
+}
+int getLeftOffset(){
+	return alienLeftOffset;
+}
+
 void setAlienPositionGlobal(unsigned short val){
 	//For tracking score and length of game
 	alienMovementDistance = val;
-
-	if( alienBlockX >= ALIEN_BLOCK_X_END && getAlienDirection() == 1 ){
-
+	xil_printf("alien blockx: %d\r\n",alienBlockX);
+	if( alienBlockX >= (ALIEN_BLOCK_X_END+ alienRightOffset*WORD_WIDTH) && getAlienDirection() == 1 ){
+		 xil_printf("set alien Case 1\r\n");
 
 		alienBlockY = alienBlockY + val;
-		alienBlockX = ALIEN_BLOCK_X_END;
+		alienBlockX = ALIEN_BLOCK_X_END + alienRightOffset*WORD_WIDTH;
 
 		//begin decrementing alienBlockX
 		if(getAlienDirection() == 1)
 			reverseAlienDirection();
 
 	}
-	else if( alienBlockX <= ALIEN_BLOCK_X_START && getAlienDirection() == -1){
-
+	else if( alienBlockX <= (ALIEN_BLOCK_X_START + alienLeftOffset*WORD_WIDTH) && getAlienDirection() == -1){
+		xil_printf("set alien Case 2\r\n");
 		alienBlockY = alienBlockY + val;
-		alienBlockX = ALIEN_BLOCK_X_START;
+		alienBlockX = ALIEN_BLOCK_X_START + alienLeftOffset*WORD_WIDTH;
 
 		reverseAlienDirection();
 
 	}else{
+		xil_printf("set alien Case 3\r 	\n");
 				alienBlockX = alienBlockX + val*getAlienDirection();
 				//Code prevents remainder of value from causing screen off.
-				if(alienBlockX > ALIEN_BLOCK_X_END)
-					alienBlockX = ALIEN_BLOCK_X_END;
-				if(alienBlockX < ALIEN_BLOCK_X_START)
-					alienBlockX = ALIEN_BLOCK_X_START;
-
-
+			if(alienBlockX > (ALIEN_BLOCK_X_END+alienRightOffset*WORD_WIDTH)){
+					alienBlockX = (ALIEN_BLOCK_X_END + alienRightOffset*WORD_WIDTH);
 			}
+			if(alienBlockX < ALIEN_BLOCK_X_START+alienLeftOffset*WORD_WIDTH){
+				alienBlockX = ALIEN_BLOCK_X_START+alienLeftOffset*WORD_WIDTH;
+			}
+	}
 
 
 
@@ -165,7 +197,7 @@ int isHaveTankBullet() {
 
 int generateRandomNumber(int number) {
 	int tmp = (rand()%(number));
-	xil_printf("POO: %d, %d)\r\n", number, tmp);
+	//xil_printf("POO: %d, %d)\r\n", number, tmp);
 	return tmp;
   //  int x= (double)rand()/RAND_MAX;
     //xil_printf("RANDOMGEN: %d, %d", number,(number+1)*x);
@@ -173,10 +205,10 @@ int generateRandomNumber(int number) {
 }
 
 point_t generateRandomAlienBulletPosition() {
-  point_t alienPoint;
+	 point_t alienPoint;
   double a = (double) rand()/RAND_MAX;
   int b = (NUMBER_ALIEN_COLUMNS + 1)*a;
-  if (alienColumnState[b] == 1) {
+  if (alienColumnState[b]== 1) {
     //check val+row looop and return when meets
     int i;
     for (i = NUMBER_ALIEN_ROWS; i > 0; i--) {
@@ -214,4 +246,5 @@ void setBunkerErosionState(int x) {
 		bunkerErosionState[i] = x;
 	}
 }
+
 

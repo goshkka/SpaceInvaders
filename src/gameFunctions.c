@@ -11,6 +11,7 @@
 #include "tank.h"
 #include "bunkers.h"
 #include "bullets.h"
+#include "banner.h"
 #include "spaceship.h"
 #include <stdio.h>
 	int COLUMNS=ALIEN_BLOCK_COLUMNS;
@@ -19,7 +20,79 @@
 void drawSprite(unsigned int * framePointer, int x, int y, int width, int height, unsigned int color) {
 
 }
+//returns a valid bullet Column 0-11
+int aliveRandomCol(){
+	int filler[COLUMNS];
+	int *alien_roll = takeRoll(filler);
 
+	int i = 0;
+	int j = 0;
+	//get census of alive aliens
+	for(i=0;i<COLUMNS;i++){
+		if(alien_roll[i]==ALIVE){
+
+			j++;
+		}
+	}
+	//generates a random number out of the set j is how many are alive
+	int rand = generateRandomNumber(j);
+	int bullet=0;
+	//finds the alive column in the alien columns
+	for(j=0,i=0;i<COLUMNS;i++){
+
+		if(alien_roll[i]==ALIVE){
+
+			if(j==rand){
+				bullet = i;
+			}j++;
+		}
+
+	}
+
+return bullet;
+}
+
+//	alienColumnState();
+	//generateRandomNumber(10)+ 1
+
+
+//Returns integer position
+int getLowestAlien(int column){
+	int c=0;
+	int j;
+	int row;
+	for(j=NUMBER_ALIEN_ROWS-1;j>-1;j--){
+		if(getAlienLifeState(j*NUMBER_ALIEN_COLUMNS+column)==DEAD){
+			c++;
+		}else{row = c;}
+	}
+	//xil_printf("getLowest:%d\r\n",row);
+return row;
+}
+
+int* takeRoll(int* array){
+	int c,k,j;
+	//This for loop initializes alien_roll
+	for(k=0;k<NUMBER_ALIEN_COLUMNS;k++){
+			c=0;
+			for(j=0;j<NUMBER_ALIEN_ROWS;j++){
+		     if(getAlienLifeState(j*NUMBER_ALIEN_COLUMNS+k)==DEAD){
+		    	c++;
+		     }
+
+			}
+			if(c==NUMBER_ALIEN_ROWS){
+				//ALIEN ROW IS DEAD
+				array[k]=DEAD;
+			}else{
+				//ALIEN ROW IS Alive
+				array[k]=ALIVE;
+			}
+
+			 //dead column
+		}
+	return array;
+}
 int isEven(int n){
 	   if ( n%2 == 0 )
 	      return 1;
@@ -140,34 +213,11 @@ void removeRedraw(unsigned int * framePointer, int positionChange){
 
 }
 
-int* takeRoll(int* arr){
-	int c,k,j;
-	//This for loop initializes alien_roll
-	for(k=0;k<COLUMNS;k++){
-			c=0;
-			for(j=0;j<ROWS;j++){
-		     if(getAlienLifeState(j*COLUMNS+k)==DEAD){
-		    	c++;
-		     }
 
-			}
-			if(c==ROWS){
-				//ALIEN ROW IS DEAD
-				arr[k]=DEAD;
-			}else{
-				//ALIEN ROW IS Alive
-				arr[k]=ALIVE;
-			}
-
-			 //dead column
-		}
-	return arr;
-}
 // Loop through each alien and redraw
 // Added a blank row between each alien row
 void drawAlienBlock(unsigned int * framePointer, int positionChange)
 {
-
 
 	//removes the previous parts of the frame
 	removeRedraw(framePointer, positionChange);
@@ -176,38 +226,23 @@ void drawAlienBlock(unsigned int * framePointer, int positionChange)
 	int filler[COLUMNS];
 	int *alien_roll = takeRoll(filler);
 
-
-//		if(getAlienLifeState(c) == DEAD for all columns
-//		 DEAD_ALIEN_OFFSET += WORD_WIDTH;
-		 //add DEAD_ALIEN_OFFSET to draw section.....
-//	}
-
-
-
 	//REMOVES DEAD ALIEN COLUMNS FROM BLOCK
 	int i = 0;
-	int start = 0;
-	int end = COLUMNS;
+	while(alien_roll[i]==DEAD){
+			i++;
+	}
+	//set left offset(Neg)
+	setAlienOffset(-i);
 
-	while(i< COLUMNS){
-		if(alien_roll[i]==DEAD)
-			start = i+1;
-		else
-			break;
+	i=0;
+	while(alien_roll[COLUMNS-i-1]==DEAD){
 		i++;
 	}
-
-	i=COLUMNS-1;
-	while(i >-1){
-		if(alien_roll[i]==DEAD)
-			end = i;
-		else
-			break;
-		i--;
-	}
+	//set right offset(Pos)
+	setAlienOffset(i);
 
 	//DRAWS ALIEN BLOCK
-	for (i = start; i < end; i++) {
+	for (i = 0; i < COLUMNS; i++) {
 
 
 
@@ -415,22 +450,50 @@ void drawTankBullet(unsigned int * framePointer) {
 
 void drawAlienBullets(unsigned int * framePointer) {
 	int row, col, bullet;
-
+	int hit = 0;
 	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
+		hit = 0;
 		// only draw if bullet is there
 		if (alienBullets[bullet].isAvailable == ALIVE) {
 			//xil_printf("BUNGHOLIO");
 			for (row = 0; row < (ALIEN_BULLET_HEIGHT ); row++) {
 				for (col = 0; col < (ALIEN_BULLET_WIDTH); col++) {
 					if ((alienBulletSymbol[alienBullets[bullet].bulletSymbol][row] & (1<<(ALIEN_BULLET_WIDTH-1-col)))) {
+						// If bullet hits something green (bunker or tank)
+						// draw blank bullet
+						// Determine if it is bunker or tank
+						// If bunker determine which one and change the state at that bunker
+						// Else blow up tank, decrement lives, redraw tank
+						// remove bullet and break loop
+						if (framePointer[(row+alienBullets[bullet].y)*640 + col+alienBullets[bullet].x] == 0x0000FF00) {
+							hit = 1;
+							// HIT a bunker
+							if (alienBullets[bullet].y < TANK_Y_POSITION-10) {
 
+							// Else hit the tank
+							} else {
+								//blow up tank
+								//decrement lives
+								setNumberLives(getNumberLives() - 1);
+								if (getNumberLives() == 0) {
+									xil_printf("GAME OVER");
+								}
+								drawLives(framePointer);
+								//redraw tank
+							}
+							alienBullets[bullet].isAvailable = 0;
+							break;
+						}
 						if (alienBullets[bullet].y > 0) {
 							framePointer[(row+alienBullets[bullet].y)*640 + col+alienBullets[bullet].x] = 0xFFFFFFFF;
 						} else {
 							framePointer[(row+alienBullets[bullet].y)*640 + col+alienBullets[bullet].x] = 0x00000000;
 						}
 					}
-						framePointer[(row+alienBullets[bullet].y- ALIEN_BULLET_HEIGHT)*640 + col+alienBullets[bullet].x] = 0x00000000;
+					framePointer[(row+alienBullets[bullet].y- ALIEN_BULLET_HEIGHT)*640 + col+alienBullets[bullet].x] = 0x00000000;
+				}
+				if (hit == 1) {
+					break;
 				}
 			}
 		}
@@ -438,91 +501,129 @@ void drawAlienBullets(unsigned int * framePointer) {
 }
 
 void drawSpaceShip(unsigned int * framePointer) {
-	int row, col, bullet;
-	for (row = 0; row < (SPACESHIP_HEIGHT ); row++) {
-	  for (col = 0; col < (SPACESHIP_WIDTH); col++) {
-		  if ((spaceShipSymbol[row] & (1<<(SPACESHIP_WIDTH-1-col)))) {
-						if (alienBullets[bullet].y > 0) {
-						  framePointer[(row)*50 + col+getSpaceShipPositionGlobal()] = 0xFFFFFFFF;
-						} else {
-						  framePointer[(row)*50 + col+getSpaceShipPositionGlobal()] = 0x00000000;
-						}
-					}
-					framePointer[(row)*50 + col+getSpaceShipPositionGlobal()] = 0x00000000;
-				}
-			}
-}
-
-
-
-void drawScoreBanner(unsigned int * framePointer) {
 	int row, col;
-	for (row = 0; row < (LETTER_HEIGHT); row++) {
-		for (col = 0; col < 64; col++) {
+	for (row = 0; row < (SPACESHIP_HEIGHT); row++) {
+		for (col = 0 - SPACESHIP_TRAVEL_DISTANCE; col < (WORD_WIDTH+SPACESHIP_TRAVEL_DISTANCE); col++) {
 			if (col < 0 || col >= WORD_WIDTH) {
-				framePointer[(row+)*640 + col] = 0x00000000;
+				framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00000000;
 			} else {
-				if ((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
-					framePointer[(row)*640 + col] = 0x0000FF00;
+				if ((spaceShipSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
+					framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00FF0000;
 				} else {
-					framePointer[(row)*640 + col] = 0x00000000;
+					framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00000000;
 				}
 			}
 		}
 	}
-
 }
 
 
-void drawScore(unsigned int * framePointer) {
-
+// Had to split score up into 2 32 bit words because lack of a 64 bit data type
+void drawScoreBanner(unsigned int * framePointer) {
+	int row, col;
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH; col++) {
+			if ((scoreSymbol[0][row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+BANNER_Y)*640 + col] = 0xFFFFFFFF;
+			} else {
+				framePointer[(row+BANNER_Y)*640 + col] = 0x00000000;
+			}
+		}
+	}
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH; col++) {
+			if ((scoreSymbol[1][row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+BANNER_Y)*640 + col+WORD_WIDTH-2] = 0xFFFFFFFF;
+			} else {
+				framePointer[(row+BANNER_Y)*640 + col+WORD_WIDTH-2] = 0x00000000;
+			}
+		}
+	}
 }
+
+
+//void drawScore(unsigned int * framePointer) {}
 
 
 void drawLivesBanner(unsigned int * framePointer) {
-
+	int st = 350;
+	int row, col;
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH; col++) {
+			if ((livesSymbol[0][row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+BANNER_Y)*640 + st + col] = 0xFFFFFFFF;
+			} else {
+				framePointer[(row+BANNER_Y)*640 + st + col] = 0x00000000;
+			}
+		}
+	}
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH; col++) {
+			if ((livesSymbol[1][row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+BANNER_Y)*640 +st+col+WORD_WIDTH-6] = 0xFFFFFFFF;
+			} else {
+				framePointer[(row+BANNER_Y)*640 +st+col+WORD_WIDTH-6] = 0x00000000;
+			}
+		}
+	}
 }
 
 
 void drawLives(unsigned int * framePointer) {
-
+	int row, col, i;
+	int xPos = 400;
+	// Need to clear the screen of left overs
+	for (i = 0; i < getNumberLives()+1; i++) {
+		for (row = 0; row < (TANK_HEIGHT); row++) {
+			for (col = 0; col < (WORD_WIDTH); col++) {
+				framePointer[(row)*640 + col+xPos+i*WORD_WIDTH+i*5] = 0x00000000;
+			}
+		}
+	}
+	for (i = 0; i < getNumberLives(); i++) {
+		for (row = 0; row < (TANK_HEIGHT); row++) {
+			for (col = 0; col < (WORD_WIDTH); col++) {
+				if ((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
+					framePointer[(row)*640 + col+xPos+i*WORD_WIDTH+i*5] = 0x0000FF00;
+				} else {
+					framePointer[(row)*640 + col+xPos+i*WORD_WIDTH+i*5] = 0x00000000;
+				}
+			}
+		}
+	}
 }
 
-
-void drawBannerBlock(unsigned int * framePointer) {
-
-
-}
 
 // Draws one number on the screen
 void drawNumber(unsigned int * framePointer, int number, int xPos) {
 	int row, col;
 	for (row = 0; row < (LETTER_HEIGHT); row++) {
-		for (col = 0; col < 64; col++) {
-			if (col < 0 || col >= 8) {
-				framePointer[(row+)*640 + col] = 0x00000000;
+		for (col = 0; col < NUMBER_WIDTH; col++) {
+			if ((numbers[number][row] & (1<<(NUMBER_WIDTH-1-col)))) {
+				framePointer[(row+BANNER_Y)*640 + col+xPos] = 0x0000FF00;
 			} else {
-				if ((numbers[number][row] & (1<<(WORD_WIDTH-1-col)))) {
-					framePointer[(row)*640 + col] = 0x0000FF00;
-				} else {
-					framePointer[(row)*640 + col] = 0x00000000;
-				}
+				framePointer[(row+BANNER_Y)*640 + col+xPos] = 0x00000000;
 			}
 		}
 	}
-  
 }
 
 void drawScore(unsigned int * framePointer, int value) {
   int score = value;
   int count = 0;
-  while(score) {
+  do {
     //draw right most first, then shift to the left 10*count
-    drawNumber(framePointer, score % 10, RIGHT_NUMBER - count*10);
-    //printf("%d\n", score % 10);
+    drawNumber(framePointer, score % 10, RIGHT_NUMBER - count*12);
     score /= 10;
     count++;
-  }
+  } while(score);
+}
+
+void drawBannerBlock(unsigned int * framePointer) {
+	drawScoreBanner(framePointer);
+	drawScore(framePointer, getGlobalScore());
+	drawLivesBanner(framePointer);
+	drawLives(framePointer);
 }
 
 
