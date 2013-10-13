@@ -17,6 +17,28 @@
 	int ROWS=ALIEN_BLOCK_ROWS;
 
 void drawSprite(unsigned int * framePointer, int x, int y, int width, int height, unsigned int color) {
+	int row, col;
+	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
+		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
+				if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
+					if (getTankBulletPositionY() > 0) {
+						framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
+					} else {
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+				}
+//					framePointer[(row+y+ TANK_BULLET_TRAVEL_DISTANCE)*640 + col+x)] = 0x00000000;
+		}
+	}
+}
+
+void drawAlienBullets(unsigned int * framePointer) {
+	int row, col, bullet;
+
+	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
+		// only draw if bullet is there
+		if (alienBullets[bullet].isAvailable == ALIVE) {
+			//xil_printf("BUNGHOLIO");
 
 }
 
