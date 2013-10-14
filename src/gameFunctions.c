@@ -450,14 +450,12 @@ void drawBunkerBlock(unsigned int * framePointer) {
 //If it's a fresh bullet just draw it, but if it is moving then need to clean up redering
 void drawTankBullet(unsigned int * framePointer) {
 	int row, col;
-
 	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
 			//xil_printf("X: %d, Y: %d \r\n", getTankBulletPositionX(), getTankBulletPositionY());
 		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
 //			if (getTankBulletPositionY() > (TANK_BULLET_HEIGHT)) {
 //				 ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
 //				TANK_BULLET_TRAVEL_DISTANCE
-
 				if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
 					if (getTankBulletPositionY() > 0) {
 						framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] = 0xFFFFFFFF;
@@ -466,6 +464,23 @@ void drawTankBullet(unsigned int * framePointer) {
 					}
 				}
 					framePointer[(row+getTankBulletPositionY()+ TANK_BULLET_TRAVEL_DISTANCE)*640 + col+getTankBulletPositionX()] = 0x00000000;
+		}
+	}
+}
+
+void drawBlankTankBullet(unsigned int * framePointer, int x, int y) {
+	int row, col;
+	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
+		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
+			framePointer[(row+y)*640 + col+x] = 0x00000000;
+		}
+	}
+}
+void drawBlankAlienBullet(unsigned int * framePointer, int x, int y) {
+	int row, col;
+	for (row = 0; row < (ALIEN_BULLET_HEIGHT ); row++) {
+		for (col = 0; col < (ALIEN_BULLET_WIDTH); col++) {
+			framePointer[(row+y)*640 + col+x] = 0x00000000;
 		}
 	}
 }
