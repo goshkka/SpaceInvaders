@@ -58,6 +58,13 @@ void print(char *str);
 
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
+// boolean to pause the game while the tank dies
+// 1 = true, 0 = false;
+// when tank dies pause everything else from incrementing and when death cinema is done then set this back
+int gameInAction = 1;
+
+int tankExplosionTimer = 0;
+
 int alienTimer = 0;
 int tankBulletTimer = 0;
 int alienBulletTimer = 0;
