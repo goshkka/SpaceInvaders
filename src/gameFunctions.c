@@ -247,8 +247,8 @@ void drawAlienExplosion(unsigned int * framePointer, int x, int y) {
 }
 
 
-// Draw the explosion explosion at (x,y) and frame
-void drawAlienExplosion(unsigned int * framePointer, int x, int y, int z) {
+// Draw the tank explosion at (x,y) and frame
+void drawTankExplosion(unsigned int * framePointer, int x, int y, int z) {
 	int row, col;
 	for (row = 0; row < (TANK_HEIGHT); row++) {
 		for (col = 0; col < WORD_WIDTH_WIDTH; col++) {
@@ -536,7 +536,8 @@ void drawAlienBullets(unsigned int * framePointer) {
 
 							// Else hit the tank
 							} else {
-								//blow up tank
+								//blow up tank --> handled by fit. Just need to set the boolean to pause game action and blow up tank
+								//redraw tank --> handled by fit so it can alternate between the bitmaps and give it a slight animation
                 setGameInAction(0);
 								//decrement lives
 								setNumberLives(getNumberLives() - 1);
@@ -544,7 +545,6 @@ void drawAlienBullets(unsigned int * framePointer) {
 									xil_printf("GAME OVER");
 								}
 								drawLives(framePointer);
-								//redraw tank --> handled by fit so it can alternate between the bitmaps and give it a slight animation
 							}
 							alienBullets[bullet].isAvailable = 0;
 							break;

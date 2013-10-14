@@ -34,6 +34,7 @@ void drawLives(unsigned int * framePointer);
 void drawScore(unsigned int * framePointer, int value);
 
 void drawAlienExplosion(unsigned int * framePointer, int x, int y);
+void drawTankExplosion(unsigned int * framePointer, int x, int y, int z);
 
 void killAlien(int n);
 
