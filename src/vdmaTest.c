@@ -59,6 +59,8 @@ void print(char *str);
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
 
+unsigned int * framePointer0;
+
 int tankExplosionTimer = 0;
 
 int alienTimer = 0;
@@ -124,14 +126,29 @@ void timer_interrupt_handler() {
 //
 //  //draw first explosion
 //  if (tankExplosionTimer == 5) {
-//
+//    drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
 //  }
+//  //draw alternate explosion
 //  if (tankExplosionTimer == 10) {
-//
+//    drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
 //  }
+//  //draw first explosion
 //  if (tankExplosionTimer == 15) {
-//
+//    drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
 //  }
+//  //draw alternate 
+//  if (tankExplosionTimer == 20) {
+//    drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
+//  }
+//  // draw first explosion
+//  if (tankExplosionTimer == 25) {
+//    drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
+//  }
+//  //draw alternate explosion
+//  if (tankExplosionTimer == 30) {
+//    drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
+//  }
+//  //draw first and cleanup
 //  if (tankExplosionTimer == 20) {
 //    setGameInAction(1);
 //    tankExplosionTimer = 0;
@@ -289,8 +306,8 @@ int main()
      // Now, let's get ready to start displaying some stuff on the screen.
      // The variables framePointer and framePointer1 are just pointers to the base address
      // of frame 0 and frame 1.
-     unsigned int * framePointer0 = (unsigned int *) FRAME_BUFFER_0_ADDR;
-   //  unsigned int * framePointer1 = ((unsigned int *) FRAME_BUFFER_0_ADDR) + 640*480;
+     framePointer0 = (unsigned int *) FRAME_BUFFER_0_ADDR;
+     //unsigned int * framePointer1 = ((unsigned int *) FRAME_BUFFER_0_ADDR) + 640*480;
 
 
      // We will start by blacking out the screen and then drawing the block sections as appropriate
