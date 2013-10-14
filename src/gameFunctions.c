@@ -513,6 +513,7 @@ void drawBlankAlienBullet(unsigned int * framePointer, int x, int y) {
 
 void drawAlienBullets(unsigned int * framePointer) {
 	int row, col, bullet;
+  // this variable is a boolean to help break the second for loop when hit
 	int hit = 0;
 	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
 		hit = 0;
@@ -543,7 +544,7 @@ void drawAlienBullets(unsigned int * framePointer) {
 									xil_printf("GAME OVER");
 								}
 								drawLives(framePointer);
-								//redraw tank
+								//redraw tank --> handled by fit so it can alternate between the bitmaps and give it a slight animation
 							}
 							alienBullets[bullet].isAvailable = 0;
 							break;
