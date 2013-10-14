@@ -142,7 +142,7 @@ int bottomInAlienSymbol[ALIEN_HEIGHT] =
 
 };
 
-int explosionImage[ALIEN_HEIGHT] =
+int alienExplosionSymbol[ALIEN_HEIGHT] =
 {
     packWord32(0,0, 0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0 ,0,0, 0,0,0,0),
     packWord32(0,0, 0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0 ,0,0, 0,0,0,0),

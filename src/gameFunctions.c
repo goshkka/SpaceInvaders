@@ -230,6 +230,21 @@ void removeRedraw(unsigned int * framePointer, int positionChange){
 						framePointer[(row+alienBlockY)*640 + col+alienBlockX] = 0x00000000;
 					}
 				}
+}
+
+// Draw the alien explosion at (x,y) 
+void drawAlienExplosion(unsigned int * framePointer, int x, int y) {
+	int row, col;
+	for (row = 0; row < (ALIEN_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH_WIDTH; col++) {
+			if (alienExplosionSymbol([row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
+			} else {
+				framePointer[(row+y)*640 + col+x] = 0x00000000;
+			}
+		}
+	}
+}
 
 
 

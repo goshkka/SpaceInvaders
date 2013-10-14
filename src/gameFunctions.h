@@ -28,12 +28,12 @@ void drawAlienBullets(unsigned int * framePointer);
 void drawSpaceShip(unsigned int * framePointer);
 void drawBannerBlock(unsigned int * framePointer);
 void drawScoreBanner(unsigned int * framePointer);
-//void drawScore(unsigned int * framePointer);
 void drawLivesBanner(unsigned int * framePointer);
 void drawLives(unsigned int * framePointer);
 
 void drawScore(unsigned int * framePointer, int value);
 
+void drawAlienExplosion(unsigned int * framePointer, int x, int y);
 
 void killAlien(int n);
 

@@ -19,7 +19,7 @@ int topInAlienSymbol[ALIEN_HEIGHT];
 int middleInAlienSymbol[ALIEN_HEIGHT];
 int bottomInAlienSymbol[ALIEN_HEIGHT];
 
-int explosionImage[ALIEN_HEIGHT];
+int alienExplosionSymbol[ALIEN_HEIGHT];
 
 
 #endif /* ALIENS_H_ */
