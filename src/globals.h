@@ -128,7 +128,7 @@ typedef struct {
 } alienBullet;
 
 alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
-int spaceShipPoints[10];
+int spaceShipPoints[4];
 
 
 int getSpaceShipPositionGlobal();

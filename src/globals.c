@@ -34,7 +34,7 @@ int alienLeftOffset = 0;
 int alienLifeState[55] = { [0 ... 54] = 1 };
 int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] = 1};
 
-int spaceShipPoints[10] = { 50, 70 ,100, 120, 150, 180, 200, 250, 300, 350 }
+int spaceShipPoints[10] = { 50, 100, 150, 300 };
 
 short tankPosition = 30;
 point_t tankBulletPosition;
