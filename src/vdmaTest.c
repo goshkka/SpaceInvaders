@@ -76,11 +76,15 @@ int alienSpaceShipGeneratorResult = 500;
 
 
 void timer_interrupt_handler() {
-//  alienTimer++;
-//  tankBulletTimer++;
-//  alienBulletTimer++;
-//  alienSpaceShipTimer++;
-//  alienSpaceShipGeneratorTimer++;
+//  if (gameInAction == 1) {
+//    alienTimer++;
+//    tankBulletTimer++;
+//    alienBulletTimer++;
+//    alienSpaceShipTimer++;
+//    alienSpaceShipGeneratorTimer++;
+//  } else {
+//    tankExplosionTimer++;
+//  }
 //
 //  //how fast the aliens move across the screen
 //  if (alienTimer == 40) {
@@ -121,6 +125,23 @@ void timer_interrupt_handler() {
 //    // Randomly generate a new result that will be long enough for the spaceship to go accross the screen
 //    // create spaceship that moves left or right and has a certain value of points {50,100, 150, 200, 300}
 //  }
+//
+//  //draw first explosion
+//  if (tankExplosionTimer == 5) {
+//
+//  }
+//  if (tankExplosionTimer == 10) {
+//
+//  }
+//  if (tankExplosionTimer == 15) {
+//
+//  }
+//  if (tankExplosionTimer == 20) {
+//    gameInAction = 1;
+//    tankExplosionTimer = 0;
+//    //draw blank tank
+//    //draw new tank if there is a new game
+//  }
 }
 
 
@@ -129,22 +150,23 @@ void pb_interrupt_handler() {
   //Clear the GPIO interrupt.
   XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
   currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
-  switch (currentButtonState) {
-    case LEFT_BUTTON:
-      setTankPositionGlobal(getTankPositionGlobal() - 5);
-      break;
-    case MIDDLE_BUTTON:
-      if (!isHaveTankBullet()) {
-        setHaveTankBullet(1);
-        setTankBulletPositionX(getTankPositionGlobal() + 15);
-        setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT+2);
-      }
-      break;
-    case RIGHT_BUTTON:
-      setTankPositionGlobal(getTankPositionGlobal() + 5);
-      break;
+  if (gameInAction == 1) {  
+    switch (currentButtonState) {
+      case LEFT_BUTTON:
+        setTankPositionGlobal(getTankPositionGlobal() - 5);
+        break;
+      case MIDDLE_BUTTON:
+        if (!isHaveTankBullet()) {
+          setHaveTankBullet(1);
+          setTankBulletPositionX(getTankPositionGlobal() + 15);
+          setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT+2);
+        }
+        break;
+      case RIGHT_BUTTON:
+        setTankPositionGlobal(getTankPositionGlobal() + 5);
+        break;
+    }
   }
-
   // You need to do something here.
   XGpio_InterruptClear(&gpPB, 0xFFFFFFFF);            // Ack the PB interrupt.
   XGpio_InterruptGlobalEnable(&gpPB);                 // Re-enable PB interrupts.
