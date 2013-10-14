@@ -34,7 +34,7 @@ int alienLeftOffset = 0;
 int alienLifeState[55] = { [0 ... 54] = 1 };
 int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] = 1};
 
-int spaceShipPoints[10] = { 50, 100, 150, 300 };
+int spaceShipPoints[4] = { 50, 100, 150, 300 };
 
 short tankPosition = 30;
 point_t tankBulletPosition;
@@ -243,6 +243,7 @@ void initGameDefaults() {
 		alienBullets[i].bulletSymbol = 0;
 	}
 	setHaveTankBullet(0);
+  setAlienSpaceShipPosition(0-SPACESHIP_WIDTH);
 }
 
 void setBunkerErosionState(int x) {
