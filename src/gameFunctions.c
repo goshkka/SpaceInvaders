@@ -247,7 +247,18 @@ void drawAlienExplosion(unsigned int * framePointer, int x, int y) {
 }
 
 
-
+// Draw the explosion explosion at (x,y) and frame
+void drawAlienExplosion(unsigned int * framePointer, int x, int y, int z) {
+	int row, col;
+	for (row = 0; row < (TANK_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH_WIDTH; col++) {
+			if (tankKilledSymbols[z]([row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
+			} else {
+				framePointer[(row+y)*640 + col+x] = 0x00000000;
+			}
+		}
+	}
 }
 
 
