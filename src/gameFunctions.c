@@ -536,6 +536,7 @@ void drawAlienBullets(unsigned int * framePointer) {
 							// Else hit the tank
 							} else {
 								//blow up tank
+                setGameInAction(0);
 								//decrement lives
 								setNumberLives(getNumberLives() - 1);
 								if (getNumberLives() == 0) {
