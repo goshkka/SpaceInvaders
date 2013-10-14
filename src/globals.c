@@ -36,12 +36,25 @@ int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] 
 
 int spaceShipPoints[4] = { 50, 100, 150, 300 };
 
+// boolean to pause the game while the tank dies
+// 1 = true, 0 = false;
+// when tank dies pause everything else from incrementing and when death cinema is done then set this back
+int gameInAction = 1;
+
 short tankPosition = 30;
 point_t tankBulletPosition;
 point_t alienBlockPosition;
 int numberLives = 3;
 // Here are the accessors.
 //
+
+int getGameInAction() {
+  return gameInAction;
+}
+void setGameInAction(int x) {
+  gameInAction = x;
+}
+
 int getNumberLives() {
 	//xil_printf("%d",numberLives);
   return numberLives;

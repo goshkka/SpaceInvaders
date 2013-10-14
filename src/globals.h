@@ -131,6 +131,9 @@ alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
 int spaceShipPoints[4];
 
 
+int getGameInAction();
+void setGameInAction(int x);
+
 int getSpaceShipPositionGlobal();
 void setSpaceShipPositionGlobal(int x);
 

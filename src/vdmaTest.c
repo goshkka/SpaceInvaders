@@ -58,10 +58,6 @@ void print(char *str);
 
 XGpio gpLED;  // This is a handle for the LED GPIO block.
 XGpio gpPB;   // This is a handle for the push-button GPIO block.
-// boolean to pause the game while the tank dies
-// 1 = true, 0 = false;
-// when tank dies pause everything else from incrementing and when death cinema is done then set this back
-int gameInAction = 1;
 
 int tankExplosionTimer = 0;
 
@@ -76,7 +72,7 @@ int alienSpaceShipGeneratorResult = 500;
 
 
 void timer_interrupt_handler() {
-//  if (gameInAction == 1) {
+//  if (getGameInAction() == 1) {
 //    alienTimer++;
 //    tankBulletTimer++;
 //    alienBulletTimer++;
@@ -137,7 +133,7 @@ void timer_interrupt_handler() {
 //
 //  }
 //  if (tankExplosionTimer == 20) {
-//    gameInAction = 1;
+//    setGameInAction(1);
 //    tankExplosionTimer = 0;
 //    //draw blank tank
 //    //draw new tank if there is a new game
@@ -150,7 +146,7 @@ void pb_interrupt_handler() {
   //Clear the GPIO interrupt.
   XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
   currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
-  if (gameInAction == 1) {  
+  if (getGameInAction() == 1) {  
     switch (currentButtonState) {
       case LEFT_BUTTON:
         setTankPositionGlobal(getTankPositionGlobal() - 5);
