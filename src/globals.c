@@ -34,6 +34,8 @@ int alienLeftOffset = 0;
 int alienLifeState[55] = { [0 ... 54] = 1 };
 int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] = 1};
 
+int spaceShipPoints[10] = { 50, 70 ,100, 120, 150, 180, 200, 250, 300, 350 }
+
 short tankPosition = 30;
 point_t tankBulletPosition;
 point_t alienBlockPosition;
@@ -202,6 +204,9 @@ int generateRandomNumber(int number) {
   //  int x= (double)rand()/RAND_MAX;
     //xil_printf("RANDOMGEN: %d, %d", number,(number+1)*x);
     //return (number+1)/x;
+}
+int generateRandomNumberInterval(int number0, int number1) {
+  return ( rand() % ( number1 - number0 ) ) + number0;
 }
 
 point_t generateRandomAlienBulletPosition() {

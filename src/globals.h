@@ -128,7 +128,7 @@ typedef struct {
 } alienBullet;
 
 alienBullet alienBullets[NUMBER_ALIEN_BULLETS];
-
+int spaceShipPoints[10];
 
 
 int getSpaceShipPositionGlobal();
@@ -192,6 +192,7 @@ void setHaveTankBullet(int x);
 int isHaveTankBullet();
 
 int generateRandomNumber(int number);
+int generateRandomNumberInterval(int number0, int number1);
 int alienColumnState[NUMBER_ALIEN_COLUMNS];
 //returns array of DEAD/ALIVE alien columns
 
