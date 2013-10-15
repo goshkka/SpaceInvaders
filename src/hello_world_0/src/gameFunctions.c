@@ -515,7 +515,7 @@ void drawBlankAlienBullet(unsigned int * framePointer, int x, int y) {
 }
 
 void drawAlienBullets(unsigned int * framePointer) {
-	int row, col, bullet;
+	int row, col, bullet, index;
   // this variable is a boolean to help break the second for loop when hit
 	int hit = 0;
 	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
@@ -536,8 +536,12 @@ void drawAlienBullets(unsigned int * framePointer) {
 							hit = 1;
 							// HIT a bunker
 							if (alienBullets[bullet].y < TANK_Y_POSITION-10) {
+                //draw blank bullet
 
-							// Else hit the tank
+                //determine which bunker was hit and update the state array
+                index = determineBunkerHit(alienBullets[bullet].x, alienBullets[bullet].y);
+							  bunkerErosionState[index] = bunkerErosionState[index] + 1;
+              // Else hit the tank
 							} else {
 								//blow up tank --> handled by fit. Just need to set the boolean to pause game action and blow up tank
 								//redraw tank --> handled by fit so it can alternate between the bitmaps and give it a slight animation
