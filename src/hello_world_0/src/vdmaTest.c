@@ -125,28 +125,28 @@ void timer_interrupt_handler() {
 	if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
 		// Randomly generate a new result that will be long enough for the spaceship to go accross the screen
 		// create spaceship that moves left or right and has a certain value of points {50,100, 150, 200, 300}
-	}
+	  // Maybe when the spaceship is hit we determine which point value to get in the drawTankBullet Method
+  }
 	//when to generate alien bullet
-
 	if (alienBulletGeneratorTimer ==alienBulletGeneratorResult) {
 		alienBulletGeneratorTimer =0;
 		int i;
 		for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
-						if (alienBullets[i].isAvailable == DEAD ) {
-							alienBullets[i].isAvailable = ALIVE;
-							// Position
-							//point_t bullet = generateRandomAlienBulletPosition();
-							int bulletColumn = aliveRandomCol();
-							//You do the random junk WORD_WIDTH*i is where it determines the alien
-							alienBullets[i].x = (HALF_WORD_WIDTH/2)  + (WORD_WIDTH*bulletColumn) + getAlienXYGlobal().x;
-							alienBullets[i].y = ALIEN_BLOCK_Y_END + ALIEN_BULLET_HEIGHT/5 -(ALIEN_HEIGHT*getLowestAlien(bulletColumn)) + getAlienXYGlobal().y;
-							//point_t tmp = generateRandomAlienBulletPosition();
-							//alienBullets[i].x = tmp.x;
-							//alienBullets[i].y = tmp.y;
-							alienBullets[i].bulletSymbol = generateRandomNumber(NUMBER_ALIEN_BULLETS);
-							break;
-						}
-					}
+      if (alienBullets[i].isAvailable == DEAD ) {
+        alienBullets[i].isAvailable = ALIVE;
+        // Position
+        //point_t bullet = generateRandomAlienBulletPosition();
+        int bulletColumn = aliveRandomCol();
+        //You do the random junk WORD_WIDTH*i is where it determines the alien
+        alienBullets[i].x = (HALF_WORD_WIDTH/2)  + (WORD_WIDTH*bulletColumn) + getAlienXYGlobal().x;
+        alienBullets[i].y = ALIEN_BLOCK_Y_END + ALIEN_BULLET_HEIGHT/5 -(ALIEN_HEIGHT*getLowestAlien(bulletColumn)) + getAlienXYGlobal().y;
+        //point_t tmp = generateRandomAlienBulletPosition();
+        //alienBullets[i].x = tmp.x;
+        //alienBullets[i].y = tmp.y;
+        alienBullets[i].bulletSymbol = generateRandomNumber(NUMBER_ALIEN_BULLETS);
+        break;
+      }
+    }
 	}
 
 	//draw first explosion
