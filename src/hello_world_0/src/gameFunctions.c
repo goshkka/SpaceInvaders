@@ -695,6 +695,62 @@ void drawBannerBlock(unsigned int * framePointer) {
 }
 
 
+int determineBunkerHit(int x, int y) {
+  int first = 48;
+  int second = 208;
+  int third = 368;
+  int fourth = 528;
+  
+  int returnValue = -1;
+  int i = 0;
+  int bunkerWidth = HALF_WORD_WIDTH*4;
+
+  for (i = 1; i < 5; i++ ) {
+    if ( x >= first * i && < first + HALF_WORD_WIDTH * i) {
+      returnValue = i - 1;
+    }
+  }
+  // only need to calculate if value hasn't been found
+  if ( returnValue == -1) {
+    for (i = 1; i < 5; i++) {
+      if ( x >= second * i && < second + HALF_WORD_WIDTH * i) {
+        returnValue = i + 3;
+      }
+    }
+  }
+  if ( returnValue == -1) {
+    for (i = 1; i < 5; i++) {
+      if ( x >= third * i && < third + HALF_WORD_WIDTH * i) {
+        returnValue = i + 7;
+      }
+    }
+  } 
+  if ( returnValue == -1) {
+    for (i = 1; i < 5; i++) {
+      if ( x >= fourth * i && < fourth + HALF_WORD_WIDTH * i) {
+        returnValue = i + 11;
+      }
+    }
+  } 
+
+
+
+
+  //top row
+  if (y >= 350 && y < 362) {
+    //return value is the same - leave
+  }
+  // second row
+  else if (y >= 362 && y < 374) {
+    returnValue = returnValue + 15
+  }
+  // third row 
+  else if (y >= 374 && y < 386) {
+    //potential bug because of how i did bottom row - may need to redo
+    returnValue = returnValue + 30;
+  }
+  return returnValue;
+}
 
 //void eraseTankBullet(unsigned int * framePointer) {
 //	xil_printf("FUGLY MOMMA");
