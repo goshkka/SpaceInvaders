@@ -17,6 +17,7 @@
 	int COLUMNS=ALIEN_BLOCK_COLUMNS;
 	int ROWS=ALIEN_BLOCK_ROWS;
 
+//?????
 void drawSprite(unsigned int * framePointer, int x, int y, int width, int height, unsigned int color) {
 	int row, col;
 	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
@@ -33,15 +34,17 @@ void drawSprite(unsigned int * framePointer, int x, int y, int width, int height
 	}
 }
 
-void drawAlienBullets(unsigned int * framePointer) {
-	int row, col, bullet;
-
-	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
-		// only draw if bullet is there
-		if (alienBullets[bullet].isAvailable == ALIVE) {
-			//xil_printf("BUNGHOLIO");
-
-}
+//void drawAlienBullets(unsigned int * framePointer) {
+//	int row, col, bullet;
+//
+//	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
+//		// only draw if bullet is there
+//		if (alienBullets[bullet].isAvailable == ALIVE) {
+//			//xil_printf("BUNGHOLIO");
+//		}
+//	}
+//
+//}
 //returns a valid bullet Column 0-11
 int aliveRandomCol(){
 	int filler[COLUMNS];
@@ -78,7 +81,7 @@ return bullet;
 	//generateRandomNumber(10)+ 1
 
 
-//Returns integer position
+//Returns the lowest alien in a column
 int getLowestAlien(int column){
 	int c=0;
 	int j;
@@ -92,6 +95,7 @@ int getLowestAlien(int column){
 return row;
 }
 
+//determines which alien columns are present
 int* takeRoll(int* array){
 	int c,k,j;
 	//This for loop initializes alien_roll
@@ -122,13 +126,30 @@ int isEven(int n){
 	      return 0;
 }
 
-// n has to be in the range from 0 to 54
+// top left alien is 00, bottom right alien is 54
 void killAlien(int n)
 {
 	if(n>-1 && n <55)
 	{
 		setAlienLifeState(n);
 	}
+
+	//find out which columns are dead
+	int filler[COLUMNS];
+	int *alien_roll = takeRoll(filler);
+	//REMOVES DEAD ALIEN COLUMNS FROM BLOCK
+	int i = 0;
+	while(alien_roll[i]==DEAD){
+			i++;
+	}
+	//set left offset(Neg)
+	setAlienOffset(-i);
+	i=0;
+	while(alien_roll[COLUMNS-i-1]==DEAD){
+		i++;
+	}
+	//set right offset(Pos)
+	setAlienOffset(i);
 }
 
 void drawAlien(int x, int y, int alienType, unsigned int * framePointer) {
@@ -212,6 +233,7 @@ void drawRowSeparator(int x, int y, unsigned int * framePointer) {
 		}
 	}
 }
+//cleans aliens mess after move
 void removeRedraw(unsigned int * framePointer, int positionChange){
 	int row, col;
 	//removes left side redraw needs to be put in a method
@@ -234,31 +256,31 @@ void removeRedraw(unsigned int * framePointer, int positionChange){
 
 // Draw the alien explosion at (x,y) 
 void drawAlienExplosion(unsigned int * framePointer, int x, int y) {
-	int row, col;
-	for (row = 0; row < (ALIEN_HEIGHT); row++) {
-		for (col = 0; col < WORD_WIDTH_WIDTH; col++) {
-			if (alienExplosionSymbol([row] & (1<<(WORD_WIDTH-1-col)))) {
-				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
-			} else {
-				framePointer[(row+y)*640 + col+x] = 0x00000000;
-			}
-		}
-	}
+//	int row, col;
+//	for (row = 0; row < (ALIEN_HEIGHT); row++) {
+//		for (col = 0; col < WORD_WIDTH; col++) {
+//			if (alienExplosionSymbol([row] & (1<<(WORD_WIDTH-1-col)))) {
+//				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
+//			} else {
+//				framePointer[(row+y)*640 + col+x] = 0x00000000;
+//			}
+//		}
+//	}
 }
 
 
 // Draw the tank explosion at (x,y) and frame
 void drawTankExplosion(unsigned int * framePointer, int x, int y, int z) {
-	int row, col;
-	for (row = 0; row < (TANK_HEIGHT); row++) {
-		for (col = 0; col < WORD_WIDTH_WIDTH; col++) {
-			if (tankKilledSymbols[z]([row] & (1<<(WORD_WIDTH-1-col)))) {
-				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
-			} else {
-				framePointer[(row+y)*640 + col+x] = 0x00000000;
-			}
-		}
-	}
+//	int row, col;
+//	for (row = 0; row < (TANK_HEIGHT); row++) {
+//		for (col = 0; col < WORD_WIDTH; col++) {
+//			if (tankKilledSymbols[z][row] &   (1<<(WORD_WIDTH-1-col) ) {
+//				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
+//			} else {
+//				framePointer[(row+y)*640 + col+x] = 0x00000000;
+//			}
+//		}
+//	}
 }
 
 
@@ -270,26 +292,8 @@ void drawAlienBlock(unsigned int * framePointer, int positionChange)
 	//removes the previous parts of the frame
 	removeRedraw(framePointer, positionChange);
 
-	//find out which columns are dead
-	int filler[COLUMNS];
-	int *alien_roll = takeRoll(filler);
-
-	//REMOVES DEAD ALIEN COLUMNS FROM BLOCK
-	int i = 0;
-	while(alien_roll[i]==DEAD){
-			i++;
-	}
-	//set left offset(Neg)
-	setAlienOffset(-i);
-
-	i=0;
-	while(alien_roll[COLUMNS-i-1]==DEAD){
-		i++;
-	}
-	//set right offset(Pos)
-	setAlienOffset(i);
-
 	//DRAWS ALIEN BLOCK
+	int i;
 	for (i = 0; i < COLUMNS; i++) {
 
 
@@ -321,8 +325,7 @@ void drawAlienBlock(unsigned int * framePointer, int positionChange)
 	}
 }
 
-//Draw block of bunkers
-
+//Redraws the tank when it moves
 void drawTank(unsigned int * framePointer) {
 	int row, col;
 	for (row = 0; row < (TANK_HEIGHT); row++) {
