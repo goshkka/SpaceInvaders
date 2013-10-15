@@ -614,9 +614,6 @@ void drawScoreBanner(unsigned int * framePointer) {
 }
 
 
-//void drawScore(unsigned int * framePointer) {}
-
-
 void drawLivesBanner(unsigned int * framePointer) {
 	int st = 350;
 	int row, col;
