@@ -39,7 +39,7 @@ int spaceShipPoints[4] = { 50, 100, 150, 300 };
 // boolean to pause the game while the tank dies
 // 1 = true, 0 = false;
 // when tank dies pause everything else from incrementing and when death cinema is done then set this back
-int gameInAction = 1;
+int gameInAction = 0;
 
 short tankPosition = 30;
 point_t tankBulletPosition;
@@ -248,7 +248,7 @@ point_t generateRandomAlienBulletPosition() {
 void initGameDefaults() {
 	int i = 0;
 	//int bunkerErosionState[38];
-	for (i = 0; i < NUMBER_BUNKER_ELEMENTS; i++) {
+	for (i = 0; i < NUMBER_BUNKER_ELEMENTS+1; i++) {
 		bunkerErosionState[i] = 4;
 	}
 	for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {

@@ -67,23 +67,28 @@ int alienTimer = 0;
 int tankBulletTimer = 0;
 int alienBulletTimer = 0;
 int alienBulletGeneratorTimer = 0;
-int alienBulletGeneratorResult=100;
+int alienBulletGeneratorResult = 300;
 int alienSpaceShipTimer = 0;
 int alienSpaceShipGeneratorTimer = 0;
 int currentButtonState = 0;
 int alienSpaceShipGeneratorResult = 500;
 
-
+//Game In Action States
+//0 game is moving
+//1 tank is blowing up
+//2 game over freeze all
 void timer_interrupt_handler() {
-	if (getGameInAction() == ALIVE) {
+	if (getGameInAction() == 0) {
 		alienTimer++;
 		tankBulletTimer++;
 		alienBulletTimer++;
 		alienBulletGeneratorTimer++;
 		alienSpaceShipTimer++;
 		alienSpaceShipGeneratorTimer++;
-	} else {
+	} else if (getGameInAction() == 1){
 		tankExplosionTimer++;
+	} else if (getGameInAction() == 2) {
+		return;
 	}
 
 	//how fast the aliens move across the screen
@@ -150,33 +155,42 @@ void timer_interrupt_handler() {
 	}
 
 	//draw first explosion
-	if (tankExplosionTimer == 5) {
+	if (tankExplosionTimer % 10 == 1) {
 		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
 	}
 	//draw alternate explosion
-	if (tankExplosionTimer == 10) {
+	if (tankExplosionTimer % 20 == 1) {
 		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
 	}
-	//draw first explosion
-	if (tankExplosionTimer == 15) {
-		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
-	}
-	//draw alternate
-	if (tankExplosionTimer == 20) {
-		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
-	}
-	// draw first explosion
-	if (tankExplosionTimer == 25) {
-		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
-	}
-	//draw alternate explosion
-	if (tankExplosionTimer == 30) {
-		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
-	}
-	//draw first and cleanup
-	if (tankExplosionTimer == 20) {
-		setGameInAction(1);
+//	//draw first explosion
+//	if (tankExplosionTimer == 15) {
+//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
+//	}
+//	//draw alternate
+//	if (tankExplosionTimer == 20) {
+//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
+//	}
+//	// draw first explosion
+//	if (tankExplosionTimer == 25) {
+//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
+//	}
+//	//draw alternate explosion
+//	if (tankExplosionTimer == 30) {
+//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
+//	}
+//	//draw first and cleanup
+	if (tankExplosionTimer == 150) {
+		setGameInAction(0);
 		tankExplosionTimer = 0;
+		drawBlankTank(framePointer0);
+
+		setNumberLives(getNumberLives() - 1);
+		if (getNumberLives() == 0) {
+			xil_printf("GAME OVER");
+			setGameInAction(2);
+		} else {
+			setTankPositionGlobal(50);
+		}
 		//draw blank tank
 		//draw new tank if there is a new game
 	}
@@ -188,7 +202,7 @@ void pb_interrupt_handler() {
 	//Clear the GPIO interrupt.
 	XGpio_InterruptGlobalDisable(&gpPB);                // Turn off all PB interrupts for now.
 	currentButtonState = XGpio_DiscreteRead(&gpPB, 1);  // Get the current state of the buttons.
-	if (getGameInAction() == 1) {
+	if (getGameInAction() == 0) {
 		switch (currentButtonState) {
 		case LEFT_BUTTON:
 			setTankPositionGlobal(getTankPositionGlobal() - 5);
@@ -197,7 +211,7 @@ void pb_interrupt_handler() {
 			if (!isHaveTankBullet()) {
 				setHaveTankBullet(1);
 				setTankBulletPositionX(getTankPositionGlobal() + 15);
-				setTankBulletPositionY(TANK_Y_POSITION - TANK_BULLET_HEIGHT+2);
+				setTankBulletPositionY(TANK_Y_POSITION - 2*TANK_BULLET_HEIGHT);
 			}
 			break;
 		case RIGHT_BUTTON:
@@ -478,6 +492,7 @@ int main()
 
 		for (i = 0; i < NUMBER_BUNKER_ELEMENTS; i++) {
 			if (tmpBunkerState[i] != bunkerErosionState[i]) {
+				//xil_printf("HERE");
 				tmpBunkerState[i] = bunkerErosionState[i];
 				drawBunkerBlock(framePointer0);
 			}

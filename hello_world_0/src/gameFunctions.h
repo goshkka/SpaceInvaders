@@ -35,6 +35,7 @@ void drawScore(unsigned int * framePointer, int value);
 
 void drawAlienExplosion(unsigned int * framePointer, int x, int y);
 void drawTankExplosion(unsigned int * framePointer, int x, int y, int z);
+void drawBlankTank(unsigned int * framePointer);
 
 int determineBunkerHit(int x, int y);
 

@@ -271,16 +271,17 @@ void drawAlienExplosion(unsigned int * framePointer, int x, int y) {
 
 // Draw the tank explosion at (x,y) and frame
 void drawTankExplosion(unsigned int * framePointer, int x, int y, int z) {
-//	int row, col;
-//	for (row = 0; row < (TANK_HEIGHT); row++) {
-//		for (col = 0; col < WORD_WIDTH; col++) {
-//			if (tankKilledSymbols[z][row] &   (1<<(WORD_WIDTH-1-col) ) {
-//				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
-//			} else {
-//				framePointer[(row+y)*640 + col+x] = 0x00000000;
-//			}
-//		}
-//	}
+	int row, col;
+	for (row = 0; row < (TANK_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH; col++) {
+			if (tankKilledSymbols[z][row] & (1<<(WORD_WIDTH-1-col))) {
+				//((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))
+				framePointer[(row+y)*640 + col+x] = 0x0000FF00;;
+			} else {
+				framePointer[(row+y)*640 + col+x] = 0x00000000;
+			}
+		}
+	}
 }
 
 
@@ -458,22 +459,22 @@ void drawBunkerBlock(unsigned int * framePointer) {
 	//Draw bunker 1
 	drawTopLevelBunker(48, bunkerErosionState[0], bunkerErosionState[1], bunkerErosionState[2], bunkerErosionState[3], framePointer);
 	drawMiddleLevelBunker(48, bunkerErosionState[16], bunkerErosionState[17], bunkerErosionState[18], bunkerErosionState[19], framePointer);
-	drawBottomLevelBunker(48, bunkerErosionState[31], bunkerErosionState[32], framePointer);
+	drawBottomLevelBunker(48, bunkerErosionState[32], bunkerErosionState[33], framePointer);
 
 	//Draw bunker 2
-	drawTopLevelBunker(208, bunkerErosionState[0], bunkerErosionState[1], bunkerErosionState[2], bunkerErosionState[3], framePointer);
-	drawMiddleLevelBunker(208, bunkerErosionState[19], bunkerErosionState[20], bunkerErosionState[21], bunkerErosionState[22], framePointer);
-	drawBottomLevelBunker(208, bunkerErosionState[33], bunkerErosionState[34], framePointer);
+	drawTopLevelBunker(208, bunkerErosionState[4], bunkerErosionState[5], bunkerErosionState[6], bunkerErosionState[7], framePointer);
+	drawMiddleLevelBunker(208, bunkerErosionState[20], bunkerErosionState[21], bunkerErosionState[22], bunkerErosionState[23], framePointer);
+	drawBottomLevelBunker(208, bunkerErosionState[34], bunkerErosionState[35], framePointer);
 
 	//Draw bunker 3
-	drawTopLevelBunker(368, bunkerErosionState[0], bunkerErosionState[1], bunkerErosionState[2], bunkerErosionState[3], framePointer);
-	drawMiddleLevelBunker(368, bunkerErosionState[23], bunkerErosionState[24], bunkerErosionState[25], bunkerErosionState[26], framePointer);
-	drawBottomLevelBunker(368, bunkerErosionState[35], bunkerErosionState[36], framePointer);
+	drawTopLevelBunker(368, bunkerErosionState[8], bunkerErosionState[9], bunkerErosionState[10], bunkerErosionState[11], framePointer);
+	drawMiddleLevelBunker(368, bunkerErosionState[24], bunkerErosionState[25], bunkerErosionState[26], bunkerErosionState[27], framePointer);
+	drawBottomLevelBunker(368, bunkerErosionState[36], bunkerErosionState[37], framePointer);
 
 	//Draw bunker 4
-	drawTopLevelBunker(528, bunkerErosionState[0], bunkerErosionState[1], bunkerErosionState[2], bunkerErosionState[3], framePointer);
-	drawMiddleLevelBunker(528, bunkerErosionState[27], bunkerErosionState[28], bunkerErosionState[29], bunkerErosionState[30], framePointer);
-	drawBottomLevelBunker(528, bunkerErosionState[37], bunkerErosionState[38], framePointer);
+	drawTopLevelBunker(528, bunkerErosionState[12], bunkerErosionState[13], bunkerErosionState[14], bunkerErosionState[15], framePointer);
+	drawMiddleLevelBunker(528, bunkerErosionState[28], bunkerErosionState[29], bunkerErosionState[30], bunkerErosionState[31], framePointer);
+	drawBottomLevelBunker(528, bunkerErosionState[38], bunkerErosionState[39], framePointer);
 }
 
 //If it's a fresh bullet just draw it, but if it is moving then need to clean up redering
@@ -486,6 +487,9 @@ void drawTankBullet(unsigned int * framePointer) {
 //				 ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
 //				TANK_BULLET_TRAVEL_DISTANCE
 				if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
+					if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0xFFFFFFFF) {
+
+					}
 					if (getTankBulletPositionY() > 0) {
 						framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] = 0xFFFFFFFF;
 					} else {
@@ -507,9 +511,13 @@ void drawBlankTankBullet(unsigned int * framePointer, int x, int y) {
 }
 void drawBlankAlienBullet(unsigned int * framePointer, int x, int y) {
 	int row, col;
-	for (row = 0; row < (ALIEN_BULLET_HEIGHT ); row++) {
+	for (row = 0; row < (ALIEN_BULLET_HEIGHT+ALIEN_BULLET_TRAVEL_DISTANCE ); row++) {
 		for (col = 0; col < (ALIEN_BULLET_WIDTH); col++) {
-			framePointer[(row+y)*640 + col+x] = 0x00000000;
+			if (framePointer[(row+y-ALIEN_BULLET_HEIGHT)*640 + col+x] == 0x0000FF00) {
+				framePointer[(row+y-ALIEN_BULLET_HEIGHT)*640 + col+x] = 0x0000FF00;
+			} else {
+				framePointer[(row+y-ALIEN_BULLET_HEIGHT)*640 + col+x] = 0x00000000;
+			}
 		}
 	}
 }
@@ -534,24 +542,34 @@ void drawAlienBullets(unsigned int * framePointer) {
 						// remove bullet and break loop
 						if (framePointer[(row+alienBullets[bullet].y)*640 + col+alienBullets[bullet].x] == 0x0000FF00) {
 							hit = 1;
+							drawBlankAlienBullet(framePointer, alienBullets[bullet].x, alienBullets[bullet].y);
 							// HIT a bunker
 							if (alienBullets[bullet].y < TANK_Y_POSITION-10) {
-                //draw blank bullet
+								//draw blank bullet
 
-                //determine which bunker was hit and update the state array
-                index = determineBunkerHit(alienBullets[bullet].x, alienBullets[bullet].y);
-							  bunkerErosionState[index] = bunkerErosionState[index] + 1;
-              // Else hit the tank
-							} else {
+								//determine which bunker was hit and update the state array
+								index = determineBunkerHit(alienBullets[bullet].x, alienBullets[bullet].y);
+								int value = bunkerErosionState[index];
+								if (value == 4) {
+									value = 0;
+								} else if (value == 3) {
+									value = 3;
+								} else {
+									value = value + 1;
+								}
+								//xil_printf("\r\nIndex = %d, Value = %d",index, value);
+								bunkerErosionState[index] = value;
+							  // Else hit the tank
+							} else if (alienBullets[bullet].y >= TANK_Y_POSITION-10 && alienBullets[bullet].y < TANK_Y_POSITION + TANK_HEIGHT) {
+								xil_printf("\r\nHERE HOMEE1");
 								//blow up tank --> handled by fit. Just need to set the boolean to pause game action and blow up tank
 								//redraw tank --> handled by fit so it can alternate between the bitmaps and give it a slight animation
-                setGameInAction(0);
+								setGameInAction(1);
 								//decrement lives
-								setNumberLives(getNumberLives() - 1);
-								if (getNumberLives() == 0) {
-									xil_printf("GAME OVER");
-								}
+
 								drawLives(framePointer);
+							} else {
+
 							}
 							alienBullets[bullet].isAvailable = 0;
 							break;
@@ -677,6 +695,15 @@ void drawNumber(unsigned int * framePointer, int number, int xPos) {
 	}
 }
 
+void drawBlankTank(unsigned int * framePointer) {
+	int row, col;
+	for (row = 0; row < (TANK_HEIGHT ); row++) {
+		for (col = 0; col < (WORD_WIDTH); col++) {
+			framePointer[(row+TANK_Y_POSITION)*640 + col+getTankPositionGlobal()] = 0x00000000;
+		}
+	}
+}
+
 void drawScore(unsigned int * framePointer, int value) {
   int score = value;
   int count = 0;
@@ -697,6 +724,7 @@ void drawBannerBlock(unsigned int * framePointer) {
 
 
 int determineBunkerHit(int x, int y) {
+
   int first = 48;
   int second = 208;
   int third = 368;
@@ -704,32 +732,37 @@ int determineBunkerHit(int x, int y) {
   
   int returnValue = -1;
   int i = 0;
-  int bunkerWidth = HALF_WORD_WIDTH*4;
+  //int bunkerWidth = HALF_WORD_WIDTH*4;
 
-  for (i = 1; i < 5; i++ ) {
-    if ( x >= first * i && < first + HALF_WORD_WIDTH * i) {
-      returnValue = i - 1;
+  for (i = 0; i < 4; i++ ) {
+	  //xil_printf("\r\nFirst: %d, Second: %d", first + i*HALF_WORD_WIDTH, first + HALF_WORD_WIDTH * (i+1));
+    if (x >= first + i*HALF_WORD_WIDTH && x < first + HALF_WORD_WIDTH * (i+1)) {
+      returnValue = i;
+      break;
     }
   }
   // only need to calculate if value hasn't been found
   if ( returnValue == -1) {
-    for (i = 1; i < 5; i++) {
-      if ( x >= second * i && < second + HALF_WORD_WIDTH * i) {
-        returnValue = i + 3;
+    for (i = 0; i < 4; i++) {
+      if ( x >= second + i*HALF_WORD_WIDTH && x < second + HALF_WORD_WIDTH * (i+1)) {
+        returnValue = i + 4;
+        break;
       }
     }
   }
   if ( returnValue == -1) {
-    for (i = 1; i < 5; i++) {
-      if ( x >= third * i && < third + HALF_WORD_WIDTH * i) {
-        returnValue = i + 7;
+    for (i = 0; i < 4; i++) {
+      if ( x >= third + i*HALF_WORD_WIDTH && x < third + HALF_WORD_WIDTH * (i+1)) {
+        returnValue = i + 8;
+        break;
       }
     }
   } 
   if ( returnValue == -1) {
-    for (i = 1; i < 5; i++) {
-      if ( x >= fourth * i && < fourth + HALF_WORD_WIDTH * i) {
-        returnValue = i + 11;
+    for (i = 0; i < 4; i++) {
+      if ( x >= fourth + i*HALF_WORD_WIDTH && x < fourth + HALF_WORD_WIDTH * (i+1)) {
+        returnValue = i + 12;
+        break;
       }
     }
   } 
@@ -743,15 +776,17 @@ int determineBunkerHit(int x, int y) {
   }
   // second row
   else if (y >= 362 && y < 374) {
-    returnValue = returnValue + 15
+    returnValue = returnValue + 15;
   }
   // third row 
   else if (y >= 374 && y < 386) {
     //potential bug because of how i did bottom row - may need to redo
     returnValue = returnValue + 30;
   }
+  //xil_printf("\r\nx=%d, y=%d : return=%d", x, y,returnValue);
   return returnValue;
 }
+
 
 //void eraseTankBullet(unsigned int * framePointer) {
 //	xil_printf("FUGLY MOMMA");
