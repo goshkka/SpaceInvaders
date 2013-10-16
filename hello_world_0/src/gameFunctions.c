@@ -594,13 +594,13 @@ void drawSpaceShip(unsigned int * framePointer) {
 	int row, col;
 	for (row = 0; row < (SPACESHIP_HEIGHT); row++) {
 		for (col = 0 - SPACESHIP_TRAVEL_DISTANCE; col < (WORD_WIDTH+SPACESHIP_TRAVEL_DISTANCE); col++) {
-			if (col < 0 || col >= WORD_WIDTH) {
-				framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00000000;
-			} else {
+			//if (col < 0 || col >= WORD_WIDTH) {
+			//	framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00000000;
+			//} else {
 				if ((spaceShipSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
-					framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00FF0000;
+					framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal()] = 0x00FF0000;
 				} else {
-					framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00000000;
+					framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal()] = 0x00000000;
 				}
 			}
 		}
