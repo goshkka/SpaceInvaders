@@ -121,7 +121,7 @@ void timer_interrupt_handler() {
 		}
 	}
 	//how fast space ship travels across screen
-	if (alienSpaceShipTimer == 80) {
+	if (alienSpaceShipTimer == 40) {
 		alienSpaceShipTimer = 0;
 		//set alien spaceship position by moving left or right?
 		setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + 10);
@@ -162,24 +162,7 @@ void timer_interrupt_handler() {
 	if (tankExplosionTimer % 20 == 1) {
 		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
 	}
-//	//draw first explosion
-//	if (tankExplosionTimer == 15) {
-//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
-//	}
-//	//draw alternate
-//	if (tankExplosionTimer == 20) {
-//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
-//	}
-//	// draw first explosion
-//	if (tankExplosionTimer == 25) {
-//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
-//	}
-//	//draw alternate explosion
-//	if (tankExplosionTimer == 30) {
-//		drawTankExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,2);
-//	}
-//	//draw first and cleanup
-	if (tankExplosionTimer == 150) {
+	if (tankExplosionTimer == 170) {
 		setGameInAction(0);
 		tankExplosionTimer = 0;
 		drawBlankTank(framePointer0);
