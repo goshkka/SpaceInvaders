@@ -649,7 +649,7 @@ void drawTankBullet(unsigned int * framePointer) {
 					setHaveTankBullet(0);
 
 					break;
-				}
+
 				//}
 				//if it encounters white
 				if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0xFFFFFFFF) {
@@ -662,23 +662,20 @@ void drawTankBullet(unsigned int * framePointer) {
 					deadAlien.x = getTankBulletPositionX() - location.x;
 					int dA_row=deadAlien.y/(ALIEN_HEIGHT+ROW_SEPERATOR_HEIGHT);
 					int dA_col=deadAlien.x/(WORD_WIDTH);
-					//xil_printf("deadALien:(%d,%d)\r\n",dA_col,dA_row);
 
 					killAlien(dA_row*COLUMNS+dA_col, framePointer,deadAlien.x,deadAlien.y);
 
 					//Destroy bullet/Reset Bullet
 
-
 					//drawBlankTankBullet(framePointer, getTankBulletPositionX(), getTankBulletPositionY());
-
 					//Reset Tank and Don't update bullet anymore
-
 					//setHaveTankBullet(0);
 
 				}
 				//if it encounters RED
 				if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0x00FF0000) {
-					drawAlienExplosion(framePointer, getSpaceShipPositionGlobal(),SPACESHIP_Y);
+					setHaveSpaceShip(0);
+          drawAlienExplosion(framePointer, getSpaceShipPositionGlobal(),SPACESHIP_Y);
 					//drawShipExplosion(framePointer, getSpaceShipPositionGlobal(),SPACESHIP_Y,1);
 				}
 
