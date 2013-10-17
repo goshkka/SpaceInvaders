@@ -161,7 +161,7 @@ void timer_interrupt_handler() {
 		}
 	}
 	//when to generate an alien spaceship to fly across the screen
-	if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
+	if (alienSpaceShipGeneratorTimer >= alienSpaceShipGeneratorResult) {
 		if (isHaveSpaceShip() == 0) {
 			setHaveSpaceShip(1);
 			// random true/false 
@@ -172,7 +172,7 @@ void timer_interrupt_handler() {
         setSpaceShipPositionGlobal(1);
         spaceShipTravelDistance = 10;
       } else {
-        setSpaceShipPositionGlobal(640 - WORD_WIDTH);
+        setSpaceShipPositionGlobal(640);
         spaceShipTravelDistance = -10;
       }
 		}

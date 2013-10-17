@@ -13,7 +13,6 @@
 int tankMovementDistance = 5;
 int alienMovementDistance = 5;
 int totalAlienMovement = 0;
-int spaceShipPosition = 0;
 
 short alienDirection = 1;
 short shipDirection = 1;
@@ -34,7 +33,10 @@ int alienLeftOffset = 0;
 //Set Aliens to alive/dead 1/0
 int alienLifeState[55] = { [0 ... 54] = 1 };
 int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] = 1};
+
+//spaceship 
 int haveSpaceShip = 0;
+int spaceShipPosition = 0;
 int spaceShipPoints[4] = { 50, 100, 150, 300 };
 
 // boolean to pause the game while the tank dies
