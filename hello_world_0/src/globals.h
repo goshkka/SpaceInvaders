@@ -11,7 +11,7 @@
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
-
+#define GAME_OVER 185000
 
 #define ALIEN_BLOCK_COLUMNS 11
 #define ALIEN_BLOCK_ROWS 5
@@ -134,6 +134,8 @@ int spaceShipPoints[4];
 int getGameInAction();
 void setGameInAction(int x);
 
+int isHaveSpaceShip();
+void setHaveSpaceShip(int x);
 int getSpaceShipPositionGlobal();
 void setSpaceShipPositionGlobal(int x);
 
@@ -172,6 +174,9 @@ int alienLifeState[55];
 void setAlienLifeState(int alien);
 int getAlienLifeState(int alien);
 
+void setAlienTimer(int time);
+int getAlienTimer();
+
 void setAlienOffset(int offset);
 int getRightOffset();
 int getLeftOffset();
@@ -183,8 +188,8 @@ int tankMovementDistance;
 
 // erosion state of bunkers will be a single array that looks like the following
 // 0  1  2  3			  4  5  6  7			8  9  10 11			12 13 14 15
-// 16 17 18 19			19 20 21 22			23 24 25 26			27 28 29 30
-// 31       32			33       34			35       36			37       38
+// 16 17 18 19			20 21 22 23			24 25 26 27			28 29 30 31
+// 32       33			34       35			36       37		38       39
 // The values stored in here will be from 0 - 3 for the erosion. 0 = 1 hit and 3 = gone
 // this will be initialized to -1 : which means they are to be drawn complete
 int bunkerErosionState[NUMBER_BUNKER_ELEMENTS];
@@ -198,6 +203,8 @@ int generateRandomNumber(int number);
 int generateRandomNumberInterval(int number0, int number1);
 int alienColumnState[NUMBER_ALIEN_COLUMNS];
 //returns array of DEAD/ALIVE alien columns
+
+
 
 
 void initGameDefaults();

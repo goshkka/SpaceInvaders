@@ -71,7 +71,9 @@ int alienBulletGeneratorResult = 300;
 int alienSpaceShipTimer = 0;
 int alienSpaceShipGeneratorTimer = 0;
 int currentButtonState = 0;
-int alienSpaceShipGeneratorResult = 500;
+int alienSpaceShipGeneratorResult = 200;
+int buttonTimer = 0;
+int buttonThreshold = 20;
 
 //Game In Action States
 //0 game is moving
@@ -90,19 +92,51 @@ void timer_interrupt_handler() {
 	} else if (getGameInAction() == 2) {
 		return;
 	}
-
+  if (currentButtonState != 0) {
+    buttonTimer++;
+    if (buttonTimer > buttonThreshold) {
+      if (currentButtonState & LEFT_BUTTON) {
+			  setTankPositionGlobal(getTankPositionGlobal() - 5);
+      }
+      if (currentButtonState & RIGHT_BUTTON) {
+			  setTankPositionGlobal(getTankPositionGlobal() + 5);
+      }
+      if (currentButtonState & MIDDLE_BUTTON) {
+        if (!isHaveTankBullet()) {
+          setHaveTankBullet(1);
+          //initializes tal
+          setTankBulletPositionX(getTankPositionGlobal() + 15);
+          setTankBulletPositionY(TANK_Y_POSITION - 2*TANK_BULLET_HEIGHT);
+        }
+      }
+      buttonTimer = buttonThreshold;
+    }
+  } else {
+    buttonTimer = 0;
+  }
+	//gameOver
+	//xil_printf("ALIEN_POSITION:%d\r\n",getAlienPositionGlobal());
+	if(getAlienPositionGlobal() >= GAME_OVER){
+		//setGameInAction(int x)
+		setGameInAction(2);
+		//xil_printf("ALIEN_POSITION:%d\r\n",getAlienPositionGlobal());
+	}
 	//how fast the aliens move across the screen
-	if (alienTimer == 40) {
+	if (alienTimer >= getAlienTimer()) {
 		alienTimer = 0;
 		setAlienPositionGlobal(9);
 	}
+
 	//how fast tank bullet travels across screen
-	if (tankBulletTimer == 5) {
+	if (tankBulletTimer == 2) {
 		tankBulletTimer =0;
 		if (isHaveTankBullet()){
 			setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
-			if (getTankBulletPositionY() <= -1) {
-				setHaveTankBullet(0);
+			if (getTankBulletPositionY() <= 20) {
+
+			//stop bullet at banner
+						setHaveTankBullet(0);
+
 				//eraseTankBullet(framePointer0);
 			}
 		}
@@ -123,12 +157,25 @@ void timer_interrupt_handler() {
 	//how fast space ship travels across screen
 	if (alienSpaceShipTimer == 40) {
 		alienSpaceShipTimer = 0;
-		//set alien spaceship position by moving left or right?
-		setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + 10);
+		if (isHaveSpaceShip()) {
+			//set alien spaceship position by moving left or right?
+			//Add Logic for change in direction here
+
+			setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + 10);
+			//setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() - 10);
+
+
+		}
 	}
 	//when to generate an alien spaceship to fly across the screen
 	if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
-		// Randomly generate a new result that will be long enough for the spaceship to go accross the screen
+		if (!isHaveSpaceShip()) {
+			setHaveSpaceShip(1);
+			setSpaceShipPositionGlobal(1);
+		}
+		alienSpaceShipGeneratorTimer = 0;
+
+		// Randomly generate a new result that will be long enough for the spaceship to go across the screen
 		// create spaceship that moves left or right and has a certain value of points {50,100, 150, 200, 300}
 	  // Maybe when the spaceship is hit we determine which point value to get in the drawTankBullet Method
   }
@@ -153,6 +200,11 @@ void timer_interrupt_handler() {
       }
     }
 	}
+
+	//draw alien explosiong
+	//if (alienExplosionTimer % 10 == 1) {
+			//drawAlienExplosion(framePointer0, getTankPositionGlobal(), TANK_Y_POSITION,1);
+		//}
 
 	//draw first explosion
 	if (tankExplosionTimer % 10 == 1) {
@@ -193,6 +245,7 @@ void pb_interrupt_handler() {
 		case MIDDLE_BUTTON:
 			if (!isHaveTankBullet()) {
 				setHaveTankBullet(1);
+				//initializes tal
 				setTankBulletPositionX(getTankPositionGlobal() + 15);
 				setTankBulletPositionY(TANK_Y_POSITION - 2*TANK_BULLET_HEIGHT);
 			}
@@ -237,7 +290,7 @@ int main()
 	int tmpScore = getGlobalScore();
 	int tmpBunkerState[NUMBER_BUNKER_ELEMENTS];
 	int tmpNumberLives = getNumberLives();
-
+  
 	alienBullet tmpAlienBullets[NUMBER_ALIEN_BULLETS];
 
 	int i = 0;
@@ -248,6 +301,8 @@ int main()
 		tmpBunkerState[i] = bunkerErosionState[i];
 	}
 	int tmpTankBulletPositionY = getTankBulletPositionY();
+
+
 
 	init_platform();                   // Necessary for all programs.
 
@@ -493,6 +548,7 @@ int main()
 		if (tmpSpaceShipPosition != getSpaceShipPositionGlobal()) {
 			tmpSpaceShipPosition = getSpaceShipPositionGlobal();
 			drawSpaceShip(framePointer0);
+
 		}
 		if (tmpScore != getGlobalScore()) {
 			tmpScore = getGlobalScore();

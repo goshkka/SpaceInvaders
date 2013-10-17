@@ -16,7 +16,8 @@ int totalAlienMovement = 0;
 int spaceShipPosition = 0;
 
 short alienDirection = 1;
-
+short shipDirection = 1;
+int alienTimerCnt = 65;
 int globalScore = 0;
 //Set Alien Start Position
 int alienBlockX = ALIEN_BLOCK_X_START;
@@ -33,7 +34,7 @@ int alienLeftOffset = 0;
 //Set Aliens to alive/dead 1/0
 int alienLifeState[55] = { [0 ... 54] = 1 };
 int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] = 1};
-
+int haveSpaceShip = 0;
 int spaceShipPoints[4] = { 50, 100, 150, 300 };
 
 // boolean to pause the game while the tank dies
@@ -62,19 +63,39 @@ int getNumberLives() {
 void setNumberLives(int x) {
   numberLives = x;
 }
+void setAlienTimer(int time){
+	alienTimerCnt = time;
+}
+int getAlienTimer(){
+	return alienTimerCnt;
+
+}
 
 int getGlobalScore() {
   return globalScore;
 }
 void setGlobalScore(int x) {
+
+
   globalScore = x;
+  xil_printf("score: %d",globalScore);
+}
+// 0 is no space ship
+// 1 is have ship
+int isHaveSpaceShip() {
+	return haveSpaceShip;
+}
+void setHaveSpaceShip(int x) {
+	haveSpaceShip = x;
 }
 
-int getSpaceShipPositionGlobal() {
-  return spaceShipPosition;
+int getSpaceShipPositionGlobal(){
+	return spaceShipPosition;
 }
+
+
 void setSpaceShipPositionGlobal(int x) {
-  spaceShipPosition = x;
+	spaceShipPosition = x;
 }
 
 void setTankPositionGlobal(short val) {
@@ -97,7 +118,7 @@ short getAlienDirection(){
 }
 
 void setAlienOffset(int offset){
-	xil_printf("Call->setAlienOffset:%d\r\n",offset);
+	//xil_printf("Call->setAlienOffset:%d\r\n",offset);
 	//Positive numbers Right offset
 	if(offset > 0){
 

@@ -14,22 +14,22 @@
 #include "banner.h"
 #include "spaceship.h"
 #include <stdio.h>
-	int COLUMNS=ALIEN_BLOCK_COLUMNS;
-	int ROWS=ALIEN_BLOCK_ROWS;
+int COLUMNS=ALIEN_BLOCK_COLUMNS;
+int ROWS=ALIEN_BLOCK_ROWS;
 
 //?????
 void drawSprite(unsigned int * framePointer, int x, int y, int width, int height, unsigned int color) {
 	int row, col;
 	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
 		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
-				if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
-					if (getTankBulletPositionY() > 0) {
-						framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
-					} else {
-						framePointer[(row+y)*640 + col+x] = 0x00000000;
-					}
+			if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
+				if (getTankBulletPositionY() > 0) {
+					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
+				} else {
+					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-//					framePointer[(row+y+ TANK_BULLET_TRAVEL_DISTANCE)*640 + col+x)] = 0x00000000;
+			}
+			//					framePointer[(row+y+ TANK_BULLET_TRAVEL_DISTANCE)*640 + col+x)] = 0x00000000;
 		}
 	}
 }
@@ -74,11 +74,11 @@ int aliveRandomCol(){
 
 	}
 
-return bullet;
+	return bullet;
 }
 
 //	alienColumnState();
-	//generateRandomNumber(10)+ 1
+//generateRandomNumber(10)+ 1
 
 
 //Returns the lowest alien in a column
@@ -92,7 +92,7 @@ int getLowestAlien(int column){
 		}else{row = c;}
 	}
 	//xil_printf("getLowest:%d\r\n",row);
-return row;
+	return row;
 }
 
 //determines which alien columns are present
@@ -100,38 +100,64 @@ int* takeRoll(int* array){
 	int c,k,j;
 	//This for loop initializes alien_roll
 	for(k=0;k<NUMBER_ALIEN_COLUMNS;k++){
-			c=0;
-			for(j=0;j<NUMBER_ALIEN_ROWS;j++){
-		     if(getAlienLifeState(j*NUMBER_ALIEN_COLUMNS+k)==DEAD){
-		    	c++;
-		     }
-
-			}
-			if(c==NUMBER_ALIEN_ROWS){
-				//ALIEN ROW IS DEAD
-				array[k]=DEAD;
-			}else{
-				//ALIEN ROW IS Alive
-				array[k]=ALIVE;
+		c=0;
+		for(j=0;j<NUMBER_ALIEN_ROWS;j++){
+			if(getAlienLifeState(j*NUMBER_ALIEN_COLUMNS+k)==DEAD){
+				c++;
 			}
 
-			 //dead column
 		}
+		if(c==NUMBER_ALIEN_ROWS){
+			//ALIEN ROW IS DEAD
+			array[k]=DEAD;
+		}else{
+			//ALIEN ROW IS Alive
+			array[k]=ALIVE;
+		}
+
+		//dead column
+	}
 	return array;
 }
 int isEven(int n){
-	   if ( n%2 == 0 )
-	      return 1;
-	   else
-	      return 0;
+	if ( n%2 == 0 )
+		return 1;
+	else
+		return 0;
 }
+void score(int n,unsigned int * framePointer){
+	//xil_printf("alienTimer: %d",getAlienTimer());
+	setAlienTimer(getAlienTimer()-1);
+	int score = 0;
+	if(n>=00 && n<11){
+		score = 40;
+	}
+	if(n>=11 && n<33){
+		score = 20;
+	}
+	if(n>=33 && n<55){
+		score = 10;
+	}
 
+	setGlobalScore(score+getGlobalScore());
+}
 // top left alien is 00, bottom right alien is 54
-void killAlien(int n)
+void killAlien(int n, unsigned int * framePointer,int x, int y)
 {
 	if(n>-1 && n <55)
 	{
+		//Only give score on the first Killed Alien
+		if(getAlienLifeState(n)==ALIVE){
+			score(n,framePointer);
+			drawAlienExplosion(framePointer,alienBlockX+WORD_WIDTH*(n%11), alienBlockY+ALIEN_HEIGHT*(n%5));
+
+		}
+
 		setAlienLifeState(n);
+		//quick and dirty check
+
+
+
 	}
 
 	//find out which columns are dead
@@ -140,7 +166,7 @@ void killAlien(int n)
 	//REMOVES DEAD ALIEN COLUMNS FROM BLOCK
 	int i = 0;
 	while(alien_roll[i]==DEAD){
-			i++;
+		i++;
 	}
 	//set left offset(Neg)
 	setAlienOffset(-i);
@@ -160,64 +186,111 @@ void drawAlien(int x, int y, int alienType, unsigned int * framePointer) {
 	for (row = 0; row < (ALIEN_HEIGHT); row++) {
 		for (col = 0; col < (WORD_WIDTH); col++) {
 
+			//			if (framePointer[(row+y-ALIEN_BULLET_HEIGHT)*640 + col+x] == 0x0000FF00) {
+			//							framePointer[(row+y-ALIEN_BULLET_HEIGHT)*640 + col+x] = 0x0000FF00;
+			//						} else {
+			//							framePointer[(row+y-ALIEN_BULLET_HEIGHT)*640 + col+x] = 0x00000000;
+			//						}
 			switch (alienType + cadence){
 			case 1:
 
 				if ((topOutAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
 				} else {
-					framePointer[(row+y)*640 + col+x] = 0x00000000;
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
 				}
-			break;
+				break;
 			case 2:
 
 				if ((topInAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
 				} else {
-					framePointer[(row+y)*640 + col+x] = 0x00000000;
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
 				}
-			break;
+				break;
 			case 3:
 
 				if ((middleOutAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
 				} else {
-					framePointer[(row+y)*640 + col+x] = 0x00000000;
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
 				}
-			break;
+				break;
 			case 4:
 				if ((middleInAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
 				} else {
-					framePointer[(row+y)*640 + col+x] = 0x00000000;
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
 				}
-			break;
+				break;
 			case 5:
 
 				if ((bottomOutAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
 				} else {
-					framePointer[(row+y)*640 + col+x] = 0x00000000;
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
 				}
-			break;
+				break;
 			case 6:
 				if ((bottomInAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
 				} else {
-					framePointer[(row+y)*640 + col+x] = 0x00000000;
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
 				}
-			break;
+				break;
 			case 7:
 			case 8:
-			if ((deadAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
-									framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
-								} else {
-									framePointer[(row+y)*640 + col+x] = 0x00000000;
-								}
-			break;
+				if ((deadAlienSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
+					framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;
+				} else {
+					if (framePointer[(row+y)*640 + col+x] == 0x0000FF00) {
+						framePointer[(row+y)*640 + col+x] = 0x0000FF00;
+					}else{
+
+						framePointer[(row+y)*640 + col+x] = 0x00000000;
+					}
+
+				}
+				break;
 			default:
 				xil_printf("ERROR: Entered default case in function");
-			break;
+				break;
 			}
 
 		}
@@ -237,35 +310,44 @@ void drawRowSeparator(int x, int y, unsigned int * framePointer) {
 void removeRedraw(unsigned int * framePointer, int positionChange){
 	int row, col;
 	//removes left side redraw needs to be put in a method
-		for (row = 0; row < ALIEN_BLOCK_HEIGHT + 5*ROW_SEPERATOR_HEIGHT; row++) {
-				for (col = -positionChange; col < 0; col++) {
-					framePointer[(row+alienBlockY)*640 + col+alienBlockX] = 0x00000000;
-					framePointer[(row+alienBlockY)*640 + col+alienBlockX+ALIEN_BLOCK_WIDTH + positionChange] = 0x00000000;
-
-				}
+	for (row = 0; row < ALIEN_BLOCK_HEIGHT + 5*ROW_SEPERATOR_HEIGHT; row++) {
+		for (col = -positionChange; col < 0; col++) {
+			if(framePointer[(row+alienBlockY)*640 + col+alienBlockX] == 0x0000FF00){
+				framePointer[(row+alienBlockY)*640 + col+alienBlockX] = 0x0000FF00;
+			}else{
+				framePointer[(row+alienBlockY)*640 + col+alienBlockX] = 0x00000000;
 			}
-		//Removes top side redraw needs to be put in a method
+			if(framePointer[(row+alienBlockY)*640 + col+alienBlockX+ALIEN_BLOCK_WIDTH + positionChange] == 0x0000FF00){
+				framePointer[(row+alienBlockY)*640 + col+alienBlockX+ALIEN_BLOCK_WIDTH + positionChange] = 0x0000FF00;
+			}else{
+				framePointer[(row+alienBlockY)*640 + col+alienBlockX+ALIEN_BLOCK_WIDTH + positionChange] = 0x00000000;
+			}
 
-		for (row = -(positionChange); row < 0; row++) {
+		}
+	}
+	//Removes top side redraw needs to be put in a method
 
-					for (col = -(WORD_WIDTH); col < ALIEN_BLOCK_WIDTH; col++) {
-						framePointer[(row+alienBlockY)*640 + col+alienBlockX] = 0x00000000;
-					}
-				}
+	for (row = -(positionChange); row < 0; row++) {
+
+		for (col = -(WORD_WIDTH); col < ALIEN_BLOCK_WIDTH; col++) {
+			framePointer[(row+alienBlockY)*640 + col+alienBlockX] = 0x00000000;
+		}
+	}
 }
 
 // Draw the alien explosion at (x,y) 
 void drawAlienExplosion(unsigned int * framePointer, int x, int y) {
-//	int row, col;
-//	for (row = 0; row < (ALIEN_HEIGHT); row++) {
-//		for (col = 0; col < WORD_WIDTH; col++) {
-//			if (alienExplosionSymbol([row] & (1<<(WORD_WIDTH-1-col)))) {
-//				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
-//			} else {
-//				framePointer[(row+y)*640 + col+x] = 0x00000000;
-//			}
-//		}
-//	}
+
+	int row, col;
+	for (row = 0; row < (ALIEN_HEIGHT); row++) {
+		for (col = 0; col < WORD_WIDTH; col++) {
+			if (alienExplosionSymbol[row] & (1<<(WORD_WIDTH-1-col)) ) {
+				framePointer[(row+y)*640 + col+x] = 0xFFFFFFFF;;
+			} else {
+				framePointer[(row+y)*640 + col+x] = 0x00000000;
+			}
+		}
+	}
 }
 
 
@@ -283,8 +365,42 @@ void drawTankExplosion(unsigned int * framePointer, int x, int y, int z) {
 		}
 	}
 }
+void drawShipExplosion(unsigned int * framePointer, int x, int y, int z) {
+	int row, col;
+	for (row = 0; row < (LETTER_HEIGHT); row++) {
+		for (col = 0; col < NUMBER_WIDTH; col++) {
+			if (numbers[0][row] & (1<<(WORD_WIDTH-1-col))) {
+				//((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))
+				framePointer[(row+y)*640 + col+x] = 0x0000FF00;;
+			} else {
+				framePointer[(row+y)*640 + col+x] = 0x00000000;
+			}
+		}
+	}
 
+//	for (row = 0; row < (LETTER_HEIGHT); row++) {
+//		for (col = 0; col < NUMBER_WIDTH; col++) {
+//			if (numbers[0][row] & (1<<(WORD_WIDTH-1-col))) {
+//				//((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))
+//				framePointer[(row+y)*640 + NUMBER_WIDTH+col+x] = 0x0000FF00;;
+//			} else {
+//				framePointer[(row+y)*640 + NUMBER_WIDTH+col+x] = 0x00000000;
+//			}
+//		}
+//	}
+//	for (row = 0; row < (LETTER_HEIGHT); row++) {
+//		for (col = 0; col < NUMBER_WIDTH; col++) {
+//			if (numbers[0][row] & (1<<(WORD_WIDTH-1-col))) {
+//				//((tankSymbol[row] & (1<<(WORD_WIDTH-1-col)))
+//				framePointer[(row+y)*640 + 2*NUMBER_WIDTH+col+x] = 0x0000FF00;;
+//			} else {
+//				framePointer[(row+y)*640 + 2*NUMBER_WIDTH+col+x] = 0x00000000;
+//			}
+//		}
+//	}
+	//numbers[10][LETTER_HEIGHT]
 
+}
 // Loop through each alien and redraw
 // Added a blank row between each alien row
 void drawAlienBlock(unsigned int * framePointer, int positionChange)
@@ -364,21 +480,21 @@ void drawTopLevelBunker(int x,int leftState, int middleLeftState, int middleRigh
 				} else {
 					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-			// top middle left
+				// top middle left
 			} else if (col >= HALF_WORD_WIDTH && col < HALF_WORD_WIDTH*2) {
 				if ((solidBunkerSymbol[middleLeftState][row] & (1<<(HALF_WORD_WIDTH*2-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0x0000FF00;
 				} else {
 					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-			// top middle right
+				// top middle right
 			} else if (col >= HALF_WORD_WIDTH*2 && col < HALF_WORD_WIDTH*3) {
 				if ((solidBunkerSymbol[middleRightState][row] & (1<<(HALF_WORD_WIDTH-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0x0000FF00;
 				} else {
 					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-			// top right
+				// top right
 			} else {
 				if ((topRightBunkerSymbol[rightState][row] & (1<<(HALF_WORD_WIDTH*2-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0x0000FF00;
@@ -403,22 +519,22 @@ void drawMiddleLevelBunker(int x, int leftState, int middleLeftState, int middle
 				} else {
 					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-			//  middle center left
+				//  middle center left
 			} else if (col >= HALF_WORD_WIDTH && col < HALF_WORD_WIDTH*2) {
 				if ((middleLeftBunkerSymbol[middleLeftState][row] & (1<<(HALF_WORD_WIDTH*2-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0x0000FF00;
 				} else {
 					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-			//  middle center right
+				//  middle center right
 			} else if (col >= HALF_WORD_WIDTH*2 && col < HALF_WORD_WIDTH*3) {
 				if ((middleRightBunkerSymbol[middleRightState][row] & (1<<(HALF_WORD_WIDTH-1-col)))) {
 					framePointer[(row+y
-							)*640 + col+x] = 0x0000FF00;
+					)*640 + col+x] = 0x0000FF00;
 				} else {
 					framePointer[(row+y)*640 + col+x] = 0x00000000;
 				}
-			// middle right
+				// middle right
 			} else {
 				if ((solidBunkerSymbol[rightState][row] & (1<<(HALF_WORD_WIDTH*2-1-col)))) {
 					framePointer[(row+y)*640 + col+x] = 0x0000FF00;
@@ -476,39 +592,113 @@ void drawBunkerBlock(unsigned int * framePointer) {
 	drawMiddleLevelBunker(528, bunkerErosionState[28], bunkerErosionState[29], bunkerErosionState[30], bunkerErosionState[31], framePointer);
 	drawBottomLevelBunker(528, bunkerErosionState[38], bunkerErosionState[39], framePointer);
 }
+void drawBlankTankBullet(unsigned int * framePointer, int x, int y) {
+	int row, col;
+	for (row = 0; row < (TANK_BULLET_HEIGHT+TANK_BULLET_TRAVEL_DISTANCE); row++) {
+		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
+
+			if (framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] == 0xFFFFFFFF) {
+				framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] = 0xFFFFFFFF;
+			}
+			if (framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] == 0x00FF0000) {
+				framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] = 0x00FF0000;
+			}
+			if (framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] == 0x0000FF00) {
+				framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] = 0x0000FF00;
+			}
+			else {
+				framePointer[(row+y-TANK_BULLET_HEIGHT)*640 + col+x] = 0x00000000;
+			}
+			//framePointer[(row+y)*640 + col+x] = 0x00000000;
+		}
+	}
+}
 
 //If it's a fresh bullet just draw it, but if it is moving then need to clean up redering
 void drawTankBullet(unsigned int * framePointer) {
 	int row, col;
+	int hit, index;
+	hit = 0;
+	//xil_printf("DrawTankBullet\r\n");
 	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
-			//xil_printf("X: %d, Y: %d \r\n", getTankBulletPositionX(), getTankBulletPositionY());
+		//xil_printf("X: %d, Y: %d \r\n", getTankBulletPositionX(), getTankBulletPositionY());
 		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
-//			if (getTankBulletPositionY() > (TANK_BULLET_HEIGHT)) {
-//				 ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
-//				TANK_BULLET_TRAVEL_DISTANCE
-				if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
-					if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0xFFFFFFFF) {
+			//			if (getTankBulletPositionY() > (TANK_BULLET_HEIGHT)) {
+			//				 ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
+			//				TANK_BULLET_TRAVEL_DISTANCE
+			if ((tankBulletSymbol[row] & (1<<(TANK_BULLET_WIDTH-1-col)))) {
+				//If bullet in range to impact
+			//if (getTankBulletPositionY() < TANK_Y_POSITION-10 && getTankBulletPositionY() >= 350) {
 
-					}
-					if (getTankBulletPositionY() > 0) {
-						framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] = 0xFFFFFFFF;
+				//if hits green
+				if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0x0000FF00) {
+					//determine which bunker was hit and update the state array
+					index = determineBunkerHit(getTankBulletPositionX(), getTankBulletPositionY());
+					int value = bunkerErosionState[index];
+					//xil_printf("index=%d ,value=%d\r\n",index, value);
+					if (value == 4) {
+						value = 0;
+					} else if (value == 3) {
+						value = 3;
 					} else {
-						framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] = 0x00000000;
+						value = value + 1;
 					}
+					//xil_printf("\r\nIndex = %d, Value = %d",index, value);
+					bunkerErosionState[index] = value;
+					hit = 1;
+					setHaveTankBullet(0);
+
+					break;
 				}
-					framePointer[(row+getTankBulletPositionY()+ TANK_BULLET_TRAVEL_DISTANCE)*640 + col+getTankBulletPositionX()] = 0x00000000;
+				//}
+				//if it encounters white
+				if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0xFFFFFFFF) {
+
+					//get Location. Determine and kill the correct alien
+					point_t location = getAlienXYGlobal();
+
+					point_t deadAlien;
+					deadAlien.y = getTankBulletPositionY() - location.y;
+					deadAlien.x = getTankBulletPositionX() - location.x;
+					int dA_row=deadAlien.y/(ALIEN_HEIGHT+ROW_SEPERATOR_HEIGHT);
+					int dA_col=deadAlien.x/(WORD_WIDTH);
+					//xil_printf("deadALien:(%d,%d)\r\n",dA_col,dA_row);
+
+					killAlien(dA_row*COLUMNS+dA_col, framePointer,deadAlien.x,deadAlien.y);
+
+					//Destroy bullet/Reset Bullet
+
+
+					//drawBlankTankBullet(framePointer, getTankBulletPositionX(), getTankBulletPositionY());
+
+					//Reset Tank and Don't update bullet anymore
+
+					//setHaveTankBullet(0);
+
+				}
+				//if it encounters RED
+				if (framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] == 0x00FF0000) {
+					drawAlienExplosion(framePointer, getSpaceShipPositionGlobal(),SPACESHIP_Y);
+					//drawShipExplosion(framePointer, getSpaceShipPositionGlobal(),SPACESHIP_Y,1);
+				}
+
+				//This draws the actual bullet and erases the contrails
+				if (getTankBulletPositionY() > 0 ) {
+					framePointer[(row+getTankBulletPositionY())*640 + col+getTankBulletPositionX()] = 0xFFFFFFFF;
+					framePointer[(row+getTankBulletPositionY()+ TANK_BULLET_TRAVEL_DISTANCE+5)*640 + col+getTankBulletPositionX()] = 0x00000000;
+				}
+
+			}
+			//Erases Screen
+
+		}
+		if (hit == 1) {
+			break;
 		}
 	}
+
 }
 
-void drawBlankTankBullet(unsigned int * framePointer, int x, int y) {
-	int row, col;
-	for (row = 0; row < (TANK_BULLET_HEIGHT ); row++) {
-		for (col = 0; col < (TANK_BULLET_WIDTH); col++) {
-			framePointer[(row+y)*640 + col+x] = 0x00000000;
-		}
-	}
-}
 void drawBlankAlienBullet(unsigned int * framePointer, int x, int y) {
 	int row, col;
 	for (row = 0; row < (ALIEN_BULLET_HEIGHT+ALIEN_BULLET_TRAVEL_DISTANCE ); row++) {
@@ -524,10 +714,11 @@ void drawBlankAlienBullet(unsigned int * framePointer, int x, int y) {
 
 void drawAlienBullets(unsigned int * framePointer) {
 	int row, col, bullet, index;
-  // this variable is a boolean to help break the second for loop when hit
+	// this variable is a boolean to help break the second for loop when hit
 	int hit = 0;
 	for (bullet = 0; bullet < NUMBER_ALIEN_BULLETS; bullet++) {
 		hit = 0;
+		drawBlankAlienBullet(framePointer, alienBullets[bullet].x, alienBullets[bullet].y);
 		// only draw if bullet is there
 		if (alienBullets[bullet].isAvailable == ALIVE) {
 			//xil_printf("BUNGHOLIO");
@@ -542,7 +733,7 @@ void drawAlienBullets(unsigned int * framePointer) {
 						// remove bullet and break loop
 						if (framePointer[(row+alienBullets[bullet].y)*640 + col+alienBullets[bullet].x] == 0x0000FF00) {
 							hit = 1;
-							drawBlankAlienBullet(framePointer, alienBullets[bullet].x, alienBullets[bullet].y);
+							drawBlankAlienBullet(framePointer, getTankBulletPositionX(), getTankBulletPositionY());
 							// HIT a bunker
 							if (alienBullets[bullet].y < TANK_Y_POSITION-10) {
 								//draw blank bullet
@@ -559,9 +750,9 @@ void drawAlienBullets(unsigned int * framePointer) {
 								}
 								//xil_printf("\r\nIndex = %d, Value = %d",index, value);
 								bunkerErosionState[index] = value;
-							  // Else hit the tank
+								// Else hit the tank
 							} else if (alienBullets[bullet].y >= TANK_Y_POSITION-10 && alienBullets[bullet].y < TANK_Y_POSITION + TANK_HEIGHT) {
-								xil_printf("\r\nHERE HOMEE1");
+								xil_printf("\r\nDELETED!");
 								//blow up tank --> handled by fit. Just need to set the boolean to pause game action and blow up tank
 								//redraw tank --> handled by fit so it can alternate between the bitmaps and give it a slight animation
 								setGameInAction(1);
@@ -590,22 +781,8 @@ void drawAlienBullets(unsigned int * framePointer) {
 	}
 }
 
-void drawSpaceShip(unsigned int * framePointer) {
-	int row, col;
-	for (row = 0; row < (SPACESHIP_HEIGHT); row++) {
-		for (col = 0 - SPACESHIP_TRAVEL_DISTANCE; col < (WORD_WIDTH+SPACESHIP_TRAVEL_DISTANCE); col++) {
-			//if (col < 0 || col >= WORD_WIDTH) {
-			//	framePointer[(row+SPACESHIP_Y)*640 + col+getTankPositionGlobal()] = 0x00000000;
-			//} else {
-				if ((spaceShipSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
-					framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal()] = 0x00FF0000;
-				} else {
-					framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal()] = 0x00000000;
-				}
-			}
-		}
-	}
-}
+
+
 
 
 // Had to split score up into 2 32 bit words because lack of a 64 bit data type
@@ -705,14 +882,14 @@ void drawBlankTank(unsigned int * framePointer) {
 }
 
 void drawScore(unsigned int * framePointer, int value) {
-  int score = value;
-  int count = 0;
-  do {
-    //draw right most first, then shift to the left 10*count
-    drawNumber(framePointer, score % 10, RIGHT_NUMBER - count*12);
-    score /= 10;
-    count++;
-  } while(score);
+	int score = value;
+	int count = 0;
+	do {
+		//draw right most first, then shift to the left 10*count
+		drawNumber(framePointer, score % 10, RIGHT_NUMBER - count*12);
+		score /= 10;
+		count++;
+	} while(score);
 }
 
 void drawBannerBlock(unsigned int * framePointer) {
@@ -725,69 +902,113 @@ void drawBannerBlock(unsigned int * framePointer) {
 
 int determineBunkerHit(int x, int y) {
 
-  int first = 48;
-  int second = 208;
-  int third = 368;
-  int fourth = 528;
-  
-  int returnValue = -1;
-  int i = 0;
-  //int bunkerWidth = HALF_WORD_WIDTH*4;
+	int first = 48;
+	int second = 208;
+	int third = 368;
+	int fourth = 528;
 
-  for (i = 0; i < 4; i++ ) {
-	  //xil_printf("\r\nFirst: %d, Second: %d", first + i*HALF_WORD_WIDTH, first + HALF_WORD_WIDTH * (i+1));
-    if (x >= first + i*HALF_WORD_WIDTH && x < first + HALF_WORD_WIDTH * (i+1)) {
-      returnValue = i;
-      break;
-    }
-  }
-  // only need to calculate if value hasn't been found
-  if ( returnValue == -1) {
-    for (i = 0; i < 4; i++) {
-      if ( x >= second + i*HALF_WORD_WIDTH && x < second + HALF_WORD_WIDTH * (i+1)) {
-        returnValue = i + 4;
-        break;
-      }
-    }
-  }
-  if ( returnValue == -1) {
-    for (i = 0; i < 4; i++) {
-      if ( x >= third + i*HALF_WORD_WIDTH && x < third + HALF_WORD_WIDTH * (i+1)) {
-        returnValue = i + 8;
-        break;
-      }
-    }
-  } 
-  if ( returnValue == -1) {
-    for (i = 0; i < 4; i++) {
-      if ( x >= fourth + i*HALF_WORD_WIDTH && x < fourth + HALF_WORD_WIDTH * (i+1)) {
-        returnValue = i + 12;
-        break;
-      }
-    }
-  } 
+	int returnValue = -1;
+	int i = 0;
+	//int bunkerWidth = HALF_WORD_WIDTH*4;
 
-
+	for (i = 0; i < 4; i++ ) {
+		//xil_printf("\r\nFirst: %d, Second: %d", first + i*HALF_WORD_WIDTH, first + HALF_WORD_WIDTH * (i+1));
+		if (x >= first + i*HALF_WORD_WIDTH && x < first + HALF_WORD_WIDTH * (i+1)) {
+			returnValue = i;
+			break;
+		}
+	}
+	// only need to calculate if value hasn't been found
+	if ( returnValue == -1) {
+		for (i = 0; i < 4; i++) {
+			if ( x >= second + i*HALF_WORD_WIDTH && x < second + HALF_WORD_WIDTH * (i+1)) {
+				returnValue = i + 4;
+				break;
+			}
+		}
+	}
+	if ( returnValue == -1) {
+		for (i = 0; i < 4; i++) {
+			if ( x >= third + i*HALF_WORD_WIDTH && x < third + HALF_WORD_WIDTH * (i+1)) {
+				returnValue = i + 8;
+				break;
+			}
+		}
+	}
+	if ( returnValue == -1) {
+		for (i = 0; i < 4; i++) {
+			if ( x >= fourth + i*HALF_WORD_WIDTH && x < fourth + HALF_WORD_WIDTH * (i+1)) {
+				returnValue = i + 12;
+				break;
+			}
+		}
+	}
 
 
-  //top row
-  if (y >= 350 && y < 362) {
-    //return value is the same - leave
-  }
-  // second row
-  else if (y >= 362 && y < 374) {
-    returnValue = returnValue + 15;
-  }
-  // third row 
-  else if (y >= 374 && y < 386) {
-    //potential bug because of how i did bottom row - may need to redo
-    returnValue = returnValue + 30;
-  }
-  //xil_printf("\r\nx=%d, y=%d : return=%d", x, y,returnValue);
-  return returnValue;
+
+
+	//top row
+	if (y >= 350 && y < 362) {
+		//return value is the same - leave
+	}
+	// second row
+	else if (y >= 362 && y < 374) {
+		returnValue = returnValue + 16;
+	}
+	// third row
+	else if (y >= 374 && y < 386) {
+		//potential bug because of how i did bottom row - may need to redo
+		returnValue = returnValue + 32;
+	}
+	//32 33 34 35				36 37 38 39			40 41 42 43		44 45 46 47
+	// 32       33			34       35			36       37		38       39
+	switch (returnValue) {
+	case 35:
+		returnValue = 33;
+		break;
+	case 36:
+		returnValue = 34;
+		break;
+	case 39:
+		returnValue = 35;
+		break;
+	case 40:
+		returnValue = 36;
+		break;
+	case 43:
+		returnValue = 37;
+		break;
+	case 44:
+		returnValue = 38;
+		break;
+	case 47:
+		returnValue = 39;
+		break;
+	}
+	//xil_printf("\r\nx=%d, y=%d : return=%d", x, y,returnValue);
+	return returnValue;
 }
 
+void drawSpaceShip(unsigned int * framePointer) {
+	int row, col;
 
+	//removeRedraw(framePointer, positionChange);
+	for (row = 0; row < (SPACESHIP_HEIGHT); row++) {
+		for (col = 0; col < (WORD_WIDTH); col++) {
+
+			//Erase Ends
+			framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal() - WORD_WIDTH] = 0x00000000;
+			framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal() + WORD_WIDTH] = 0x00000000;
+
+			//Draw Ship
+			if ((spaceShipSymbol[row] & (1<<(WORD_WIDTH-1-col)))) {
+				framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal()] = 0x00FF0000;
+			} else {
+				framePointer[(row+SPACESHIP_Y)*640 + col+getSpaceShipPositionGlobal()] = 0x00000000;
+			}
+		}
+	}
+}
 //void eraseTankBullet(unsigned int * framePointer) {
 //	xil_printf("FUGLY MOMMA");
 //	int row, col;

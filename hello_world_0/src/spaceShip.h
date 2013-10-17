@@ -11,6 +11,6 @@
 #include "globals.h"
 
 
-int spaceShipSymbol[ALIEN_HEIGHT];
+int spaceShipSymbol[SPACESHIP_HEIGHT];
 
 #endif /* SPACESHIP_H_ */

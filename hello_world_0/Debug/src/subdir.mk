@@ -11,7 +11,7 @@ C_SRCS += \
 ../src/gameFunctions.c \
 ../src/globals.c \
 ../src/platform.c \
-../src/spaceship.c \
+../src/spaceShip.c \
 ../src/tank.c \
 ../src/vdmaTest.c 
 
@@ -26,7 +26,7 @@ OBJS += \
 ./src/gameFunctions.o \
 ./src/globals.o \
 ./src/platform.o \
-./src/spaceship.o \
+./src/spaceShip.o \
 ./src/tank.o \
 ./src/vdmaTest.o 
 
@@ -38,7 +38,7 @@ C_DEPS += \
 ./src/gameFunctions.d \
 ./src/globals.d \
 ./src/platform.d \
-./src/spaceship.d \
+./src/spaceShip.d \
 ./src/tank.d \
 ./src/vdmaTest.d 
 
