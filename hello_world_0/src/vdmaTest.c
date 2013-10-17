@@ -71,7 +71,9 @@ int alienBulletGeneratorResult = 300;
 int alienSpaceShipTimer = 0;
 int alienSpaceShipGeneratorTimer = 0;
 int currentButtonState = 0;
-int alienSpaceShipGeneratorResult = 200;
+int alienSpaceShipGeneratorResult = 250;
+int spaceShipTravelDistance = 10;
+int randomNumber = 0;
 int buttonTimer = 0;
 int buttonThreshold = 20;
 
@@ -104,7 +106,6 @@ void timer_interrupt_handler() {
       if (currentButtonState & MIDDLE_BUTTON) {
         if (!isHaveTankBullet()) {
           setHaveTankBullet(1);
-          //initializes tal
           setTankBulletPositionX(getTankPositionGlobal() + 15);
           setTankBulletPositionY(TANK_Y_POSITION - 2*TANK_BULLET_HEIGHT);
         }
@@ -115,11 +116,8 @@ void timer_interrupt_handler() {
     buttonTimer = 0;
   }
 	//gameOver
-	//xil_printf("ALIEN_POSITION:%d\r\n",getAlienPositionGlobal());
 	if(getAlienPositionGlobal() >= GAME_OVER){
-		//setGameInAction(int x)
 		setGameInAction(2);
-		//xil_printf("ALIEN_POSITION:%d\r\n",getAlienPositionGlobal());
 	}
 	//how fast the aliens move across the screen
 	if (alienTimer >= getAlienTimer()) {
@@ -133,10 +131,8 @@ void timer_interrupt_handler() {
 		if (isHaveTankBullet()){
 			setTankBulletPositionY(getTankBulletPositionY()- TANK_BULLET_TRAVEL_DISTANCE);
 			if (getTankBulletPositionY() <= 20) {
-
 			//stop bullet at banner
 						setHaveTankBullet(0);
-
 				//eraseTankBullet(framePointer0);
 			}
 		}
@@ -157,21 +153,28 @@ void timer_interrupt_handler() {
 	//how fast space ship travels across screen
 	if (alienSpaceShipTimer == 40) {
 		alienSpaceShipTimer = 0;
-		if (isHaveSpaceShip()) {
+		if (isHaveSpaceShip() == 1) {
 			//set alien spaceship position by moving left or right?
 			//Add Logic for change in direction here
-
-			setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + 10);
+			setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() + spaceShipTravelDistance);
 			//setSpaceShipPositionGlobal(getSpaceShipPositionGlobal() - 10);
-
-
 		}
 	}
 	//when to generate an alien spaceship to fly across the screen
 	if (alienSpaceShipGeneratorTimer == alienSpaceShipGeneratorResult) {
-		if (!isHaveSpaceShip()) {
+		if (isHaveSpaceShip() == 0) {
 			setHaveSpaceShip(1);
-			setSpaceShipPositionGlobal(1);
+			// random true/false 
+      // true from left
+      // false from right
+      randomNumber = generateRandomNumber(1);
+      if (randomNumber == 1) {
+        setSpaceShipPositionGlobal(1);
+        spaceShipTravelDistance = 10;
+      } else {
+        setSpaceShipPositionGlobal(640 - WORD_WIDTH);
+        spaceShipTravelDistance = -10;
+      }
 		}
 		alienSpaceShipGeneratorTimer = 0;
 
@@ -547,8 +550,9 @@ int main()
 		}
 		if (tmpSpaceShipPosition != getSpaceShipPositionGlobal()) {
 			tmpSpaceShipPosition = getSpaceShipPositionGlobal();
-			drawSpaceShip(framePointer0);
-
+      if (isHaveSpaceShip() == 1) {
+			  drawSpaceShip(framePointer0);
+      }
 		}
 		if (tmpScore != getGlobalScore()) {
 			tmpScore = getGlobalScore();
