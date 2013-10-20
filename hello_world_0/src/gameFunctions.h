@@ -37,8 +37,10 @@ void drawScore(unsigned int * framePointer, int value);
 
 void drawAlienExplosion(unsigned int * framePointer, int x, int y);
 void drawTankExplosion(unsigned int * framePointer, int x, int y, int z);
+void drawSpaceShipNumber(unsigned int * framePointer, int x, int z);
 void drawShipExplosion(unsigned int * framePointer, int x, int y, int z);
 void drawBlankTank(unsigned int * framePointer);
+void drawBlankSpaceShip(unsigned int * framePointer);
 
 int determineBunkerHit(int x, int y);
 void killAlien(int n,unsigned int * framePointer, int x, int y);

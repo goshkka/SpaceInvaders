@@ -72,6 +72,8 @@ init_platform()
 {
     enable_caches();
     init_uart();
+    //Initialize interrupts
+
 }
 
 void

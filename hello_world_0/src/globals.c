@@ -16,7 +16,7 @@ int totalAlienMovement = 0;
 
 short alienDirection = 1;
 short shipDirection = 1;
-int alienTimerCnt = 65;
+int alienTimerCnt = 75;
 int globalScore = 0;
 //Set Alien Start Position
 int alienBlockX = ALIEN_BLOCK_X_START;
@@ -38,7 +38,8 @@ int alienColumnState[NUMBER_ALIEN_COLUMNS] = { [0 ... NUMBER_ALIEN_COLUMNS  -1] 
 int haveSpaceShip = 0;
 int spaceShipPosition = 0;
 int spaceShipPoints[4] = { 50, 100, 150, 300 };
-
+int shipExplosionTimer = 0;
+int shipScoreX = 0;
 // boolean to pause the game while the tank dies
 // 1 = true, 0 = false;
 // when tank dies pause everything else from incrementing and when death cinema is done then set this back
@@ -58,6 +59,13 @@ void setGameInAction(int x) {
   gameInAction = x;
 }
 
+int getSpaceShipScoreX() {
+	return shipScoreX;
+}
+void setSpaceShipScoreX(int x) {
+	shipScoreX = x;
+}
+
 int getNumberLives() {
 	//xil_printf("%d",numberLives);
   return numberLives;
@@ -72,15 +80,18 @@ int getAlienTimer(){
 	return alienTimerCnt;
 
 }
-
+int spaceShipExplosionTimer() {
+	return shipExplosionTimer;
+}
+void setSpaceShipExplosionTimer(int x) {
+	shipExplosionTimer = x;
+}
 int getGlobalScore() {
   return globalScore;
 }
 void setGlobalScore(int x) {
-
-
   globalScore = x;
-  xil_printf("score: %d",globalScore);
+  //xil_printf("score: %d",globalScore);
 }
 // 0 is no space ship
 // 1 is have ship
@@ -226,8 +237,9 @@ short getTankBulletPositionX(){return tankBulletPositionX;}
 short getTankBulletPositionY(){return tankBulletPositionY;}
 
 // 0 -> no bullet; 1 -> bullet
-int haveTankBullet = ALIVE;
+int haveTankBullet = DEAD;
 void setHaveTankBullet(int x) {
+
 	haveTankBullet = x;
 }
 
@@ -268,21 +280,7 @@ point_t generateRandomAlienBulletPosition() {
   return alienPoint;
 }
 
-void initGameDefaults() {
-	int i = 0;
-	//int bunkerErosionState[38];
-	for (i = 0; i < NUMBER_BUNKER_ELEMENTS+1; i++) {
-		bunkerErosionState[i] = 4;
-	}
-	for (i = 0; i < NUMBER_ALIEN_BULLETS; i++) {
-		alienBullets[i].isAvailable = 0;
-		alienBullets[i].x = 0;
-		alienBullets[i].y = 0;
-		alienBullets[i].bulletSymbol = 0;
-	}
-	setHaveTankBullet(0);
-//  setAlienSpaceShipPosition(0-SPACESHIP_WIDTH);
-}
+
 
 void setBunkerErosionState(int x) {
 	int i = 0;

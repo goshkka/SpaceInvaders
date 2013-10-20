@@ -16,7 +16,7 @@
 #define ALIEN_BLOCK_COLUMNS 11
 #define ALIEN_BLOCK_ROWS 5
 #define ALIEN_BLOCK_X_START 0
-#define ALIEN_BLOCK_Y_START 64
+#define ALIEN_BLOCK_Y_START 55
 #define ALIEN_BLOCK_X_END 640-ALIEN_BLOCK_WIDTH
 #define ALIEN_BLOCK_Y_END ALIEN_BLOCK_HEIGHT+5*ROW_SEPERATOR_HEIGHT
 #define ALIEN_HEIGHT 16
@@ -48,7 +48,7 @@
 #define TANK_Y_POSITION 415
 #define TANK_BULLET_HEIGHT 8
 #define TANK_BULLET_WIDTH 2
-#define TANK_BULLET_TRAVEL_DISTANCE 4
+#define TANK_BULLET_TRAVEL_DISTANCE 5
 
 #define NUMBER_ALIEN_COLUMNS 11
 #define NUMBER_ALIEN_ROWS 5
@@ -133,6 +133,12 @@ int spaceShipPoints[4];
 
 int getGameInAction();
 void setGameInAction(int x);
+
+int getSpaceShipScoreX();
+void setSpaceShipScoreX(int x);
+
+int spaceShipExplosionTimer();
+void setSpaceShipExplosionTimer(int x);
 
 int isHaveSpaceShip();
 void setHaveSpaceShip(int x);
