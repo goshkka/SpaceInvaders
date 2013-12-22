@@ -1,0 +1,15 @@
+##############################################################################
+## Filename:          C:\Users\superman\Desktop\DerekLab7/drivers/ps2_keyboard_v1_00_a/data/ps2_keyboard_v2_1_0.mdd
+## Description:       Microprocessor Driver Definition
+## Date:              Sun Nov 24 14:04:04 2013 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+OPTION psf_version = 2.1.0;
+
+BEGIN DRIVER ps2_keyboard
+
+  OPTION supported_peripherals = (ps2_keyboard);
+  OPTION depends = (common_v1_00_a);
+  OPTION copyfiles = all;
+
+END DRIVER

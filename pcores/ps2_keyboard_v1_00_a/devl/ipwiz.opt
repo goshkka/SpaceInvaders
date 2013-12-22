@@ -1,0 +1,9 @@
+-batch 
+-create ps2_keyboard 
+-ver 1.00.a 
+-dir "C:\Users\superman\Desktop\DerekLab7" 
+-lang vhdl 
+-bus axi4lite s 
+-reg 4 
+-xps 
+-driver 

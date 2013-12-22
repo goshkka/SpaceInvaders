@@ -1,0 +1,49 @@
+ISim log file
+Running: isim_system -gui -tclbatch system_setup.tcl 
+ISim O.87xd (signature 0xc3576ebc)
+This is a Full version of ISim.
+WARNING: File "C:/EE427/Atlys_BSB_Support_v_3_4/Atlys_AXI_BSB_Support/lib/Digilent/pcores/d_qspi_axi_v1_00_a/hdl/verilog/spi_sf.v" Line 465.  For instance spi_sf_instance/spi1/, width 4 of formal port dq_t_delayed is not equal to width 1 of actual signal dq_t_delayed.
+Time resolution is 100 fs
+# proc w  
+  global  tbpath
+  global  PathSeparator
+  puts  "Setting up signal tracing ..."
+  source system_wave.tcl
+
+# proc w_top  
+  global  tbpath
+  global  PathSeparator
+  puts  "Setting up signal tracing ..."
+  set id [group add "Top level ports"]
+  source top_level_ports_wave.tcl
+
+# proc w_instance {design_instance_name } 
+  global  tbpath
+  global  PathSeparator
+  puts  "Setting up signal tracing ..."
+  wave add $design_instance_name
+
+# proc PrintHelpInformation  
+  puts "**********************************************************************"
+  puts "**********************************************************************"
+  puts "***"
+  puts "***   Simulation Setup Macros (system_setup.tcl)"
+  puts "***"
+  puts "***   w   =>  set up signal tracing for the ISE Simulator waveform"
+  puts "***           viewer (edit signal lists in system_wave.tcl)"
+  puts "***"
+  puts "***   w_top =>  Observe top level signals in the ISim Waveform Viewer"
+  puts "***"
+  puts "***   w_instance <<instance name>>  =>  Observe signals of the given instance in the ISim waveform viewer"
+  puts "***           (Example: w /system/dlm_cntrl to observe signals of dlmb controller)."
+  puts "***"
+  puts "***   h   =>  print this help menu"
+  puts "***"
+  puts "***   Default flow is: reset; w_top; run 1000ns or reset; w; run 1000ns"
+  puts "***"
+  puts "**********************************************************************"
+  puts "**********************************************************************"
+
+# proc h   PrintHelpInformation 
+# puts Setting up simulation commands ...
+# PrintHelpInformation

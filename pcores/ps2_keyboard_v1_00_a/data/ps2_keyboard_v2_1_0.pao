@@ -1,0 +1,10 @@
+##############################################################################
+## Filename:          C:/Users/superman/Desktop/DerekLab7/pcores/ps2_keyboard_v1_00_a/data/ps2_keyboard_v2_1_0.pao
+## Description:       Peripheral Analysis Order
+## Date:              Sun Nov 24 14:04:03 2013 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+lib proc_common_v3_00_a  all 
+lib axi_lite_ipif_v1_01_a  all 
+lib ps2_keyboard_v1_00_a user_logic vhdl
+lib ps2_keyboard_v1_00_a ps2_keyboard vhdl

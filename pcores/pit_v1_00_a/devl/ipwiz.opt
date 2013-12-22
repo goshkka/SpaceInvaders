@@ -1,0 +1,9 @@
+-batch 
+-create pit 
+-ver 1.00.a 
+-dir "C:\Users\superman\Desktop\lab2RDWkSp\L2DR_hw_platform" 
+-lang vhdl 
+-bus axi4lite s 
+-reg 2 
+-xps 
+-driver 

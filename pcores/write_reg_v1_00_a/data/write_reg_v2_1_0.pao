@@ -1,0 +1,10 @@
+##############################################################################
+## Filename:          C:/Users/superman/Desktop/DerekLab7/pcores/write_reg_v1_00_a/data/write_reg_v2_1_0.pao
+## Description:       Peripheral Analysis Order
+## Date:              Mon Dec 02 20:35:45 2013 (by Create and Import Peripheral Wizard)
+##############################################################################
+
+lib proc_common_v3_00_a  all 
+lib axi_lite_ipif_v1_01_a  all 
+lib write_reg_v1_00_a user_logic vhdl
+lib write_reg_v1_00_a write_reg vhdl
