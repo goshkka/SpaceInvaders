@@ -16,7 +16,11 @@
 #define ALIEN_BLOCK_COLUMNS 11
 #define ALIEN_BLOCK_ROWS 5
 #define ALIEN_BLOCK_X_START 0
+<<<<<<< HEAD:space_invaders_7/src/globals.h
 #define ALIEN_BLOCK_Y_START 70
+=======
+#define ALIEN_BLOCK_Y_START 55
+>>>>>>> 0b25e6347213efdffebb22c5d710600b9778881b:hello_world_0/src/globals.h
 #define ALIEN_BLOCK_X_END 640-ALIEN_BLOCK_WIDTH
 #define ALIEN_BLOCK_Y_END ALIEN_BLOCK_HEIGHT+5*ROW_SEPERATOR_HEIGHT
 #define ALIEN_HEIGHT 16

@@ -97,14 +97,23 @@ void setGlobalScore(int x) {
 // 1 is have ship
 int isHaveSpaceShip() {
 	return haveSpaceShip;
+<<<<<<< HEAD:space_invaders_7/src/globals.c
+=======
+}
+void setHaveSpaceShip(int x) {
+	haveSpaceShip = x;
+>>>>>>> 0b25e6347213efdffebb22c5d710600b9778881b:hello_world_0/src/globals.c
 }
 void setHaveSpaceShip(int x) {
 	haveSpaceShip = x;
 	setHaveSpaceShipSound(x);
 
+<<<<<<< HEAD:space_invaders_7/src/globals.c
 
 }
 
+=======
+>>>>>>> 0b25e6347213efdffebb22c5d710600b9778881b:hello_world_0/src/globals.c
 int getSpaceShipPositionGlobal(){
 	return spaceShipPosition;
 }

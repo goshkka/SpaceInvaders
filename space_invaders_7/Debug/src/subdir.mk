@@ -12,11 +12,15 @@ C_SRCS += \
 ../src/gameFunctions.c \
 ../src/globals.c \
 ../src/platform.c \
+<<<<<<< HEAD:space_invaders_7/Debug/src/subdir.mk
 ../src/shoot.c \
 ../src/sounds.c \
 ../src/spaceShip.c \
 ../src/spaceShipDeathSound.c \
 ../src/spaceShipSound.c \
+=======
+../src/spaceShip.c \
+>>>>>>> 0b25e6347213efdffebb22c5d710600b9778881b:hello_world_0/Debug/src/subdir.mk
 ../src/tank.c \
 ../src/tankDeath.c \
 ../src/vdmaTest.c \
@@ -34,11 +38,15 @@ OBJS += \
 ./src/gameFunctions.o \
 ./src/globals.o \
 ./src/platform.o \
+<<<<<<< HEAD:space_invaders_7/Debug/src/subdir.mk
 ./src/shoot.o \
 ./src/sounds.o \
 ./src/spaceShip.o \
 ./src/spaceShipDeathSound.o \
 ./src/spaceShipSound.o \
+=======
+./src/spaceShip.o \
+>>>>>>> 0b25e6347213efdffebb22c5d710600b9778881b:hello_world_0/Debug/src/subdir.mk
 ./src/tank.o \
 ./src/tankDeath.o \
 ./src/vdmaTest.o \
@@ -53,11 +61,15 @@ C_DEPS += \
 ./src/gameFunctions.d \
 ./src/globals.d \
 ./src/platform.d \
+<<<<<<< HEAD:space_invaders_7/Debug/src/subdir.mk
 ./src/shoot.d \
 ./src/sounds.d \
 ./src/spaceShip.d \
 ./src/spaceShipDeathSound.d \
 ./src/spaceShipSound.d \
+=======
+./src/spaceShip.d \
+>>>>>>> 0b25e6347213efdffebb22c5d710600b9778881b:hello_world_0/Debug/src/subdir.mk
 ./src/tank.d \
 ./src/tankDeath.d \
 ./src/vdmaTest.d \
